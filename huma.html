@@ -1,0 +1,1155 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 HUMA - Alfabe Öğreniyorum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #FF6B6B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-btn:hover {
+            background: #45b8b0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .letter-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .letter-grid.numbers-theme {
+            grid-template-columns: repeat(5, 1fr);
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            gap: 20px;
+        }
+
+        .letter-grid.numbers-theme .letter-card {
+            aspect-ratio: 1;
+            padding: 20px;
+        }
+
+        .letter-grid.numbers-theme .letter-uppercase {
+            font-size: 4rem;
+        }
+
+        .letter-grid.numbers-theme .letter-lowercase {
+            font-size: 1.5rem;
+        }
+
+        .letter-card {
+            aspect-ratio: 0.85;
+            background: white;
+            border: 3px solid #7B68EE;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            border-color: #6A5ACD;
+        }
+
+        .letter-card:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        .letter-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .letter-uppercase {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #7B68EE;
+            text-shadow: none;
+        }
+
+        .letter-lowercase {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #9B8FD9;
+        }
+
+        .letter-icon {
+            position: absolute;
+            bottom: -35px;
+            right: -15px;
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .letter-card:hover .letter-icon {
+            opacity: 1;
+            bottom: -45px;
+        }
+
+        .letter-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .letter-icon div {
+            font-size: 4rem !important;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            color: #FF6B6B;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFE66D;
+            font-size: 1.3rem;
+        }
+
+        .settings-accordion {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .settings-accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .settings-accordion-header:hover {
+            background: #f8f9fa;
+        }
+
+        .settings-accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-accordion-title h3 {
+            margin: 0;
+            padding: 0;
+            border: none;
+            color: #7B68EE;
+            font-size: 1.3rem;
+        }
+
+        .settings-expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: #7B68EE;
+        }
+
+        .settings-accordion.expanded .settings-expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .settings-accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .settings-accordion.expanded .settings-accordion-body {
+            max-height: 3000px;
+        }
+
+        .settings-accordion-content {
+            padding: 0 20px 20px 20px;
+        }
+
+        .settings-subsection {
+            margin-bottom: 25px;
+        }
+
+        .settings-subsection h4 {
+            color: #FF6B6B;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ffe66d;
+        }
+
+        .settings-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #4ECDC4;
+            color: #4ECDC4;
+        }
+
+        .filter-btn.active {
+            background: #4ECDC4;
+            color: white;
+            border-color: #4ECDC4;
+        }
+
+        .prompts-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .prompt-group-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-group-card.hidden {
+            display: none;
+        }
+
+        .prompt-group-card.expanded {
+            border-color: #4ECDC4;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.15);
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .prompt-header:hover {
+            background: #f8f9fa;
+        }
+
+        .prompt-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .letter-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #7B68EE;
+            margin: 0;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .prompt-group-card.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .prompt-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .prompt-group-card.expanded .prompt-body {
+            max-height: 2000px;
+        }
+
+        .prompt-body-inner {
+            padding: 0 16px 16px 16px;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-recording {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-custom {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .no-prompts {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .no-prompts p {
+            color: #666;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .no-prompts small {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .prompts-info {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .prompts-info small {
+            color: #1976d2;
+            font-size: 0.85rem;
+        }
+
+        .prompts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .prompt-item:has(.prompt-checkbox:not(:checked)) {
+            opacity: 0.5;
+            background: #f0f0f0;
+        }
+
+        .prompt-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4ECDC4;
+        }
+
+        .prompt-number {
+            font-weight: 700;
+            color: #7B68EE;
+            min-width: 20px;
+        }
+
+        .prompt-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .prompt-input:focus {
+            border-color: #4ECDC4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+
+        .delete-prompt-btn {
+            background: transparent;
+            color: #ff6b6b;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .delete-prompt-btn:hover {
+            background: #ffebee;
+            transform: scale(1.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .btn-add {
+            flex: 1;
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add:hover {
+            background: #45b8b0;
+            transform: translateY(-1px);
+        }
+
+        .btn-clear {
+            background: #fff;
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-clear:hover {
+            background: #ffebee;
+        }
+
+        .extra-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-option:hover {
+            background: #e9ecef;
+        }
+
+        .btn-record {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-record:hover {
+            background: #5568d3;
+        }
+
+        .btn-record.has-recording {
+            background: #5e72e4;
+        }
+
+        .btn-delete-recording {
+            background: transparent;
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-delete-recording:hover {
+            background: #ffebee;
+        }
+
+        .save-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            background: #45b8b0;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #1976D2;
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box p {
+            margin: 5px 0;
+            color: #F57C00;
+            font-size: 0.95rem;
+        }
+
+        .usage-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .recording-section {
+            display: none;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .recording-section.active {
+            display: block;
+        }
+
+        .stop-recording-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .limit-input-section {
+            display: block;
+        }
+
+        .limit-input-section.hidden {
+            display: none;
+        }
+
+        .google-voice-group {
+            display: none;
+        }
+
+        .google-voice-group.visible {
+            display: block;
+        }
+
+        .browser-voice-group {
+            display: block;
+        }
+
+        .browser-voice-group.hidden {
+            display: none;
+        }
+
+        .range-input-full-width {
+            width: 100%;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-20px) scale(1.1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+            75% { transform: translateY(-15px) scale(1.08); }
+        }
+
+        .animate-bounce {
+            animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .letter-grid {
+                grid-template-columns: repeat(7, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .letter-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+            }
+
+            .letter-grid.numbers-theme {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 12px;
+            }
+
+            .letter-grid.numbers-theme .letter-uppercase {
+                font-size: 2.5rem;
+            }
+
+            .letter-grid.numbers-theme .letter-lowercase {
+                font-size: 1.2rem;
+            }
+
+            .letter-uppercase {
+                font-size: 2.2rem;
+            }
+
+            .letter-lowercase {
+                font-size: 1.1rem;
+            }
+
+            .letter-card {
+                padding: 10px 5px;
+            }
+
+            .prompts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .prompt-group-card {
+                padding: 12px;
+            }
+
+            .letter-title {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .letter-grid.numbers-theme {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+
+            .letter-grid.numbers-theme .letter-uppercase {
+                font-size: 2rem;
+            }
+
+            .letter-grid.numbers-theme .letter-lowercase {
+                font-size: 1rem;
+            }
+
+            .letter-uppercase {
+                font-size: 1.8rem;
+            }
+
+            .letter-lowercase {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎨 HUMA - Alfabe Öğreniyorum</h1>
+        </div>
+        <div class="letter-grid" id="letterGrid"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Ayarlar</h2>
+                <button type="button" class="close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Tema Seçimi -->
+                <div class="settings-section">
+                    <h3>🎨 Tema Seçimi</h3>
+                    <div class="form-group">
+                        <label for="themeSelect">Öğrenme Teması:</label>
+                        <select id="themeSelect" onchange="changeTheme()">
+                            <option value="alfabe">Alfabe (29 harf)</option>
+                            <option value="ciftlik">Çiftlik Hayvanları</option>
+                            <option value="ev">Ev Eşyaları</option>
+                            <option value="sayilar">Sayılar (0-9)</option>
+                        </select>
+                        <small>Tema seçimi tüm harflerin açıklamalarını değiştirir.</small>
+                    </div>
+                </div>
+
+                <!-- API ve Limit Ayarları (Accordion) -->
+                <div class="settings-accordion">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('api')">
+                        <div class="settings-accordion-title">
+                            <span class="settings-expand-icon">▶</span>
+                            <h3>🔑 API ve Kullanım Ayarları</h3>
+                        </div>
+                    </div>
+                    <div class="settings-accordion-body" id="accordion-api">
+                        <div class="settings-accordion-content">
+                            <!-- Google TTS API -->
+                            <div class="settings-subsection">
+                                <h4>Google Cloud API Key</h4>
+                                <p class="settings-description">Küçük kız sesi için Google Cloud Text-to-Speech API key'inizi girin.</p>
+                                <div class="form-group">
+                                    <label for="apiKey">API Key:</label>
+                                    <input type="password" id="apiKey" placeholder="AIza..." value="">
+                                    <button type="button" class="save-btn" onclick="saveApiKey()">💾 API Key Kaydet</button>
+                                </div>
+
+                                <div class="info-box">
+                                    <p>💰 <strong>Ücretsiz Kota:</strong> Ayda 1 milyon karakter ücretsiz!</p>
+                                    <p>📊 <strong>Cache:</strong> <span id="cacheCount">0</span> ses kaydedildi (tekrar API kullanmaz)</p>
+                                    <p>🔗 <strong>Kullanımı takip et:</strong> <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></p>
+                                </div>
+                            </div>
+
+                            <!-- Kullanım Limiti -->
+                            <div class="settings-subsection">
+                                <h4>Kullanım Limiti</h4>
+                                <p class="settings-description">API kullanımını sınırlandırarak maliyeti kontrol edin.</p>
+
+                                <div class="usage-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">📈 Toplam Kullanım:</div>
+                                        <div class="stat-value"><span id="totalUsage">0</span> karakter</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">📝 Mevcut Limit:</div>
+                                        <div class="stat-value"><span id="currentLimit">90</span> karakter</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">🎯 Kalan Kota:</div>
+                                        <div class="stat-value"><span id="remainingQuota">90</span> karakter</div>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="unlimitedUsage" onchange="toggleUnlimited()">
+                                    <label for="unlimitedUsage">♾️ Sınırsız Kullanım</label>
+                                </div>
+
+                                <div class="form-group limit-input-section" id="limitGroup">
+                                    <label for="maxLimit">Maksimum Karakter Limiti:</label>
+                                    <input type="number" id="maxLimit" value="90" min="10" max="10000" onchange="saveLimit()">
+                                    <small>💡 Cache'deki sesler limiti etkilemez.</small>
+                                </div>
+
+                                <button type="button" class="save-btn" onclick="saveLimit()">💾 Limiti Kaydet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ses Ayarları (Accordion) -->
+                <div class="settings-accordion">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('voice')">
+                        <div class="settings-accordion-title">
+                            <span class="settings-expand-icon">▶</span>
+                            <h3>🔊 Ses Ayarları</h3>
+                        </div>
+                    </div>
+                    <div class="settings-accordion-body" id="accordion-voice">
+                        <div class="settings-accordion-content">
+                            <!-- Ses Motoru -->
+                            <div class="settings-subsection">
+                                <h4>Ses Motoru</h4>
+                                <div class="form-group">
+                                    <label for="ttsEngine">Ses Motoru Seçimi:</label>
+                                    <select id="ttsEngine" onchange="saveTtsEngine()">
+                                        <option value="browser">Tarayıcı (Web Speech API - Ücretsiz)</option>
+                                        <option value="google">Google Cloud TTS (API Key gerekli)</option>
+                                    </select>
+                                    <small>Google TTS için API key girmeniz gerekir.</small>
+                                </div>
+                            </div>
+
+                            <!-- Ses Seçimi -->
+                            <div class="settings-subsection">
+                                <h4>Ses Seçimi</h4>
+                                <div class="form-group google-voice-group" id="googleVoiceGroup">
+                                    <label for="googleVoiceSelect">Google Ses:</label>
+                                    <select id="googleVoiceSelect" onchange="saveGoogleVoice()">
+                                        <option value="tr-TR-Wavenet-A">tr-TR-Wavenet-A (Kadın)</option>
+                                        <option value="tr-TR-Wavenet-B">tr-TR-Wavenet-B (Erkek)</option>
+                                        <option value="tr-TR-Wavenet-C">tr-TR-Wavenet-C (Kadın)</option>
+                                        <option value="tr-TR-Wavenet-D">tr-TR-Wavenet-D (Kadın)</option>
+                                        <option value="tr-TR-Wavenet-E">tr-TR-Wavenet-E (Erkek)</option>
+                                        <option value="tr-TR-Standard-A">tr-TR-Standard-A (Kadın)</option>
+                                        <option value="tr-TR-Standard-B">tr-TR-Standard-B (Erkek)</option>
+                                        <option value="tr-TR-Standard-C">tr-TR-Standard-C (Kadın)</option>
+                                        <option value="tr-TR-Standard-D">tr-TR-Standard-D (Kadın)</option>
+                                        <option value="tr-TR-Standard-E">tr-TR-Standard-E (Erkek)</option>
+                                    </select>
+                                    <small>Yüksek kaliteli Türkçe sesler.</small>
+                                </div>
+                                <div class="form-group browser-voice-group" id="browserVoiceGroup">
+                                    <label for="voiceSelect">Tarayıcı Ses:</label>
+                                    <select id="voiceSelect" onchange="saveVoice()">
+                                        <option value="">Varsayılan</option>
+                                    </select>
+                                    <small>Tarayıcı ses seçenekleri.</small>
+                                </div>
+                            </div>
+
+                            <!-- Ses Parametreleri -->
+                            <div class="settings-subsection">
+                                <h4>Ses Parametreleri</h4>
+                                <div class="form-group">
+                                    <label for="speechRate">Konuşma Hızı: <span id="rateValue">0.75</span></label>
+                                    <input type="range" class="range-input-full-width" id="speechRate" min="0.5" max="2" step="0.05" value="0.75"
+                                           oninput="updateRate(this.value)">
+                                    <small>🐢 Yavaş (0.5-0.8) | 🚶 Normal (0.9-1.1) | 🏃 Hızlı (1.2+)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="speechPitch">Ses Tonu: <span id="pitchValue">1.5</span></label>
+                                    <input type="range" class="range-input-full-width" id="speechPitch" min="0.5" max="2" step="0.1" value="1.5"
+                                           oninput="updatePitch(this.value)">
+                                    <small>🎵 Alçak (0.5-0.9) | 🎶 Normal (1.0-1.2) | 🎤 Yüksek (1.3+)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ses Kaydetme Bölümü -->
+                <div class="recording-section" id="recordingSection">
+                    <h4>🎤 Kayıt Yapılıyor: <span id="recordingLetter"></span></h4>
+                    <p>Mikrofona konuşun...</p>
+                    <button type="button" class="stop-recording-btn" onclick="stopRecording()">⏹️ Kaydı Durdur</button>
+                </div>
+
+                <!-- Özel Açıklamalar -->
+                <!-- Özel Açıklamalar (Accordion) -->
+                <div class="settings-accordion">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('prompts')">
+                        <div class="settings-accordion-title">
+                            <span class="settings-expand-icon">▶</span>
+                            <h3>✏️ Özel Açıklamalar ve Ses Kayıtları</h3>
+                        </div>
+                    </div>
+                    <div class="settings-accordion-body" id="accordion-prompts">
+                        <div class="settings-accordion-content">
+                            <p class="settings-description">Her harf için birden fazla açıklama ekleyebilir ve kendi sesinizi kaydedebilirsiniz.</p>
+
+                            <div class="filter-buttons">
+                                <button type="button" class="filter-btn active" onclick="filterLetters('all')">Tümü</button>
+                                <button type="button" class="filter-btn" onclick="filterLetters('custom')">Özel Promptlar</button>
+                                <button type="button" class="filter-btn" onclick="filterLetters('recorded')">Kayıtlı Sesler</button>
+                            </div>
+
+                            <div class="prompts-accordion" id="promptsGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="huma.js"></script>
+    <script>
+        // Debug: Sayfa yüklendikten sonra kontrol et
+        window.addEventListener('load', function() {
+            console.log('Sayfa yüklendi');
+            console.log('letterGrid elementi:', document.getElementById('letterGrid'));
+            console.log('TURKISH_LETTERS:', typeof TURKISH_LETTERS !== 'undefined' ? TURKISH_LETTERS.length : 'undefined');
+            
+            // Eğer harfler yoksa, manuel render et
+            setTimeout(function() {
+                const grid = document.getElementById('letterGrid');
+                if (grid && grid.children.length === 0) {
+                    console.log('Harfler render edilmemiş, tekrar deneniyor...');
+                    if (typeof renderLetterGrid === 'function') {
+                        renderLetterGrid();
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
