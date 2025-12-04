@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 HUMA - Alfabe Öğreniyorum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #FF6B6B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-btn:hover {
+            background: #45b8b0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .letter-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .letter-card {
+            aspect-ratio: 0.85;
+            background: white;
+            border: 3px solid #7B68EE;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            border-color: #6A5ACD;
+        }
+
+        .letter-card:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        .letter-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .letter-uppercase {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #7B68EE;
+            text-shadow: none;
+        }
+
+        .letter-lowercase {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #9B8FD9;
+        }
+
+        .letter-icon {
+            position: absolute;
+            bottom: -35px;
+            right: -15px;
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .letter-card:hover .letter-icon {
+            opacity: 1;
+            bottom: -45px;
+        }
+
+        .letter-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .letter-icon div {
+            font-size: 4rem !important;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            color: #FF6B6B;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFE66D;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .prompt-group {
+            position: relative;
+        }
+
+        .prompt-group label {
+            font-weight: 600;
+            color: #2C3E50;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .prompt-group input {
+            width: 100%;
+            padding: 10px 40px 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .prompt-group input:focus {
+            border-color: #4ECDC4;
+        }
+
+        .prompt-group.has-custom input {
+            border-color: #FF6B6B;
+            background: #fff9f9;
+        }
+
+        .reset-btn {
+            position: absolute;
+            right: 5px;
+            top: 32px;
+            background: #FFE66D;
+            border: none;
+            color: #2C3E50;
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover:not(:disabled) {
+            background: #ffd93d;
+            transform: rotate(180deg);
+        }
+
+        .reset-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .save-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            background: #45b8b0;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #1976D2;
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: #FFF9C4;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box p {
+            margin: 5px 0;
+            color: #F57C00;
+            font-size: 0.95rem;
+        }
+
+        .usage-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-20px) scale(1.1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+            75% { transform: translateY(-15px) scale(1.08); }
+        }
+
+        .animate-bounce {
+            animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .letter-grid {
+                grid-template-columns: repeat(7, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .letter-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+            }
+
+            .letter-uppercase {
+                font-size: 2.2rem;
+            }
+
+            .letter-lowercase {
+                font-size: 1.1rem;
+            }
+
+            .letter-card {
+                padding: 10px 5px;
+            }
+
+            .prompts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .letter-uppercase {
+                font-size: 1.8rem;
+            }
+
+            .letter-lowercase {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎨 HUMA - Alfabe Öğreniyorum</h1>
+            <button class="settings-btn" onclick="openSettings()">⚙️ Ayarlar</button>
+        </div>
+        <div class="letter-grid" id="letterGrid"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Ayarlar</h2>
+                <button class="close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Tema Seçimi -->
+                <div class="settings-section">
+                    <h3>🎨 Tema Seçimi</h3>
+                    <div class="form-group">
+                        <label for="themeSelect">Öğrenme Teması:</label>
+                        <select id="themeSelect" onchange="changeTheme()">
+                            <option value="alfabe">Alfabe</option>
+                            <option value="ciftlik">Çiftlik Hayvanları</option>
+                            <option value="ev">Ev Eşyaları</option>
+                        </select>
+                        <small>Tema seçimi tüm harflerin açıklamalarını değiştirir.</small>
+                    </div>
+                </div>
+
+                <!-- Google TTS API -->
+                <div class="settings-section">
+                    <h3>🔑 Google Cloud API Key</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Küçük kız sesi için Google Cloud Text-to-Speech API key'inizi girin.</p>
+                    <div class="form-group">
+                        <label for="apiKey">API Key:</label>
+                        <input type="password" id="apiKey" placeholder="AIza..." value="">
+                        <button class="save-btn" onclick="saveApiKey()">💾 API Key Kaydet</button>
+                    </div>
+                    
+                    <div class="info-box">
+                        <p>💰 <strong>Ücretsiz Kota:</strong> Ayda 1 milyon karakter ücretsiz!</p>
+                        <p>📊 <strong>Cache:</strong> <span id="cacheCount">0</span> ses kaydedildi (tekrar API kullanmaz)</p>
+                        <p>🔗 <strong>Kullanımı takip et:</strong> <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></p>
+                    </div>
+                </div>
+
+                <!-- Kullanım Limiti -->
+                <div class="settings-section">
+                    <h3>📊 Kullanım Limiti</h3>
+                    <p style="color: #666; margin-bottom: 15px;">API kullanımını sınırlandırarak maliyeti kontrol edin.</p>
+                    
+                    <div class="usage-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">📈 Toplam Kullanım (Tüm Zamanlar):</div>
+                            <div class="stat-value"><span id="totalUsage">0</span> karakter</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">📝 Mevcut Limit:</div>
+                            <div class="stat-value"><span id="currentLimit">90</span> karakter</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">🎯 Kalan Kota:</div>
+                            <div class="stat-value"><span id="remainingQuota">90</span> karakter</div>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="unlimitedUsage" onchange="toggleUnlimited()">
+                        <label for="unlimitedUsage">♾️ Sınırsız Kullanım (Limit yok)</label>
+                    </div>
+
+                    <div class="form-group" id="limitGroup">
+                        <label for="maxLimit">Maksimum Karakter Limiti:</label>
+                        <input type="number" id="maxLimit" value="90" min="10" max="10000" onchange="saveLimit()">
+                        <small>💡 İpucu: Toplam kullanım en başından itibaren tüm API çağrılarını gösterir. Cache'deki sesler limiti etkilemez.</small>
+                    </div>
+
+                    <button class="save-btn" onclick="saveLimit()">💾 Limiti Kaydet</button>
+                </div>
+
+                <!-- Ses Motoru -->
+                <div class="settings-section">
+                    <h3>🎙️ Ses Motoru</h3>
+                    <div class="form-group">
+                        <label for="ttsEngine">Ses Motoru Seçimi:</label>
+                        <select id="ttsEngine" onchange="saveTtsEngine()">
+                            <option value="browser">Tarayıcı (Web Speech API - Ücretsiz)</option>
+                            <option value="google">Google Cloud TTS (API Key gerekli)</option>
+                        </select>
+                        <small>Google TTS için yukarıdan API key girmeniz gerekir.</small>
+                    </div>
+                </div>
+
+                <!-- Ses Ayarları -->
+                <div class="settings-section">
+                    <h3>🔊 Ses Ayarları</h3>
+                    <div class="form-group" id="googleVoiceGroup" style="display: none;">
+                        <label for="googleVoiceSelect">Google Ses Seçimi:</label>
+                        <select id="googleVoiceSelect" onchange="saveGoogleVoice()">
+                            <option value="tr-TR-Wavenet-A">tr-TR-Wavenet-A (Kadın)</option>
+                            <option value="tr-TR-Wavenet-B">tr-TR-Wavenet-B (Erkek)</option>
+                            <option value="tr-TR-Wavenet-C">tr-TR-Wavenet-C (Kadın)</option>
+                            <option value="tr-TR-Wavenet-D">tr-TR-Wavenet-D (Kadın)</option>
+                            <option value="tr-TR-Wavenet-E">tr-TR-Wavenet-E (Erkek)</option>
+                            <option value="tr-TR-Standard-A">tr-TR-Standard-A (Kadın)</option>
+                            <option value="tr-TR-Standard-B">tr-TR-Standard-B (Erkek)</option>
+                            <option value="tr-TR-Standard-C">tr-TR-Standard-C (Kadın)</option>
+                            <option value="tr-TR-Standard-D">tr-TR-Standard-D (Kadın)</option>
+                            <option value="tr-TR-Standard-E">tr-TR-Standard-E (Erkek)</option>
+                        </select>
+                        <small>Yüksek kaliteli Türkçe sesler.</small>
+                    </div>
+                    <div class="form-group" id="browserVoiceGroup">
+                        <label for="voiceSelect">Tarayıcı Ses Seçimi:</label>
+                        <select id="voiceSelect" onchange="saveVoice()">
+                            <option value="">Varsayılan</option>
+                        </select>
+                        <small>Tarayıcı ses seçenekleri.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="speechRate">Konuşma Hızı: <span id="rateValue">0.75</span></label>
+                        <input type="range" id="speechRate" min="0.5" max="2" step="0.05" value="0.75" 
+                               oninput="updateRate(this.value)" style="width: 100%;">
+                        <small>🐢 Yavaş (0.5-0.8) | 🚶 Normal (0.9-1.1) | 🏃 Hızlı (1.2+) - Çocuklar için yavaş önerilir</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="speechPitch">Ses Tonu: <span id="pitchValue">1.5</span></label>
+                        <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1.5" 
+                               oninput="updatePitch(this.value)" style="width: 100%;">
+                        <small>🎵 Alçak (0.5-0.9) | 🎶 Normal (1.0-1.2) | 🎤 Yüksek/Tatlı (1.3+) - Çocuklar için yüksek önerilir</small>
+                    </div>
+
+                </div>
+
+                <!-- Özel Açıklamalar -->
+                <div class="settings-section">
+                    <h3>✏️ Özel Açıklamalar</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Her harf için özel açıklama girebilirsiniz.</p>
+                    <div class="prompts-grid" id="promptsGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Türkçe Alfabe
+        const TURKISH_LETTERS = [
+            'A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H',
+            'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P',
+            'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'
+        ];
+
+        // Temalar
+        const THEMES = {
+
+            alfabe: {
+                'A': 'A harfi Annenin A\'sı', 'B': 'B harfi Babanın B\'si', 'C': 'C harfi Ceylinin C\'si',
+                'Ç': 'Ç harfi Çiçeğin Ç\'si', 'D': 'D harfi Dedenin D\'si', 'E': 'E harfi Evin E\'si',
+                'F': 'F harfi Fıstığın F\'sı', 'G': 'G harfi Güneşin G\'si', 'Ğ': 'Ğ harfi Dağın Ğ\'sı',
+                'H': 'H harfi Halanın H\'sı', 'I': 'I harfi Irmağın I\'sı', 'İ': 'İ harfi İpliğin İ\'si',
+                'J': 'J harfi Jimnastiğin J\'si', 'K': 'K harfi Kalemin K\'sı', 'L': 'L harfi Lambanın L\'si',
+                'M': 'M harfi Meyvenin M\'si', 'N': 'N harfi Nenenin N\'si', 'O': 'O harfi Okumun O\'su',
+                'Ö': 'Ö harfi Öğretmenin Ö\'sü', 'P': 'P harfi Pastanın P\'si', 'R': 'R harfi Resminin R\'si',
+                'S': 'S harfi Saatin S\'sı', 'Ş': 'Ş harfi Şapkanın Ş\'sı', 'T': 'T harfi Topun T\'sı',
+                'U': 'U harfi Uçağın U\'su', 'Ü': 'Ü harfi Ütünün Ü\'sü', 'V': 'V harfi Vazonun V\'sı',
+                'Y': 'Y harfi Yatağın Y\'sı', 'Z': 'Z harfi Zeytinin Z\'si'
+            },
+            ciftlik: {
+                'A': 'A harfi Atın A\'sı', 'B': 'B harfi Buzağının B\'si', 'C': 'C harfi Civcivın C\'si',
+                'Ç': 'Ç harfi Çobanın Ç\'si', 'D': 'D harfi Danayın D\'si', 'E': 'E harfi Eşeğin E\'si',
+                'F': 'F harfi Farenin F\'si', 'G': 'G harfi Güvercinin G\'si', 'Ğ': 'Ğ harfi Ağılın Ğ\'sı',
+                'H': 'H harfi Horozun H\'sı', 'I': 'I harfi Kırlangıcın I\'sı', 'İ': 'İ harfi İneğin İ\'si',
+                'J': 'J harfi Jokeyın J\'si', 'K': 'K harfi Koyunun K\'sı', 'L': 'L harfi Leylek\'in L\'si',
+                'M': 'M harfi Mandanın M\'si', 'N': 'N harfi Nenenin N\'si', 'O': 'O harfi Ordek\'in O\'su',
+                'Ö': 'Ö harfi Öküzün Ö\'sü', 'P': 'P harfi Pelikannın P\'si', 'R': 'R harfi Reyhanın R\'si',
+                'S': 'S harfi Sığırın S\'sı', 'Ş': 'Ş harfi Şahinın Ş\'sı', 'T': 'T harfi Tavuğun T\'sı',
+                'U': 'U harfi Uğurböceğinin U\'su', 'Ü': 'Ü harfi Ülkünün Ü\'sü', 'V': 'V harfi Varanın V\'sı',
+                'Y': 'Y harfi Yılanın Y\'sı', 'Z': 'Z harfi Zürafa\'nın Z\'si'
+            },
+
+            ev: {
+                'A': 'A harfi Aynanın A\'sı', 'B': 'B harfi Bardağın B\'si', 'C': 'C harfi Camın C\'si',
+                'Ç': 'Ç harfi Çatalın Ç\'si', 'D': 'D harfi Dolabın D\'si', 'E': 'E harfi Elektriğin E\'si',
+                'F': 'F harfi Fırının F\'sı', 'G': 'G harfi Gözlüğün G\'sü', 'Ğ': 'Ğ harfi Yağın Ğ\'sı',
+                'H': 'H harfi Halının H\'sı', 'I': 'I harfi Işığın I\'sı', 'İ': 'İ harfi İğnenin İ\'si',
+                'J': 'J harfi Jiletın J\'si', 'K': 'K harfi Kapının K\'sı', 'L': 'L harfi Lambanın L\'si',
+                'M': 'M harfi Masanın M\'si', 'N': 'N harfi Nişastanın N\'si', 'O': 'O harfi Odanın O\'su',
+                'Ö': 'Ö harfi Örtünün Ö\'sü', 'P': 'P harfi Perdenin P\'si', 'R': 'R harfi Rafın R\'si',
+                'S': 'S harfi Sandalyenin S\'sı', 'Ş': 'Ş harfi Şemsiyenin Ş\'sı', 'T': 'T harfi Tabağın T\'sı',
+                'U': 'U harfi Ütünün U\'su', 'Ü': 'Ü harfi Ütü masasının Ü\'sü', 'V': 'V harfi Vazonun V\'sı',
+                'Y': 'Y harfi Yastığın Y\'sı', 'Z': 'Z harfi Zilin Z\'si'
+            }
+        };
+
+        // Lowercase mapping
+        const LOWERCASE = {
+            'A': 'a', 'B': 'b', 'C': 'c', 'Ç': 'ç', 'D': 'd', 'E': 'e', 'F': 'f', 'G': 'g', 'Ğ': 'ğ',
+            'H': 'h', 'I': 'ı', 'İ': 'i', 'J': 'j', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'O': 'o',
+            'Ö': 'ö', 'P': 'p', 'R': 'r', 'S': 's', 'Ş': 'ş', 'T': 't', 'U': 'u', 'Ü': 'ü', 'V': 'v',
+            'Y': 'y', 'Z': 'z'
+        };
+
+        // Theme images (emoji fallback for now, can be replaced with actual images)
+        const THEME_IMAGES = {
+            alfabe: {
+                'A': '👩', 'B': '👨', 'C': '👧', 'Ç': '🌸', 'D': '👴', 'E': '🏠', 'F': '🥜', 'G': '☀️', 'Ğ': '⛰️',
+                'H': '👩‍🦰', 'I': '🏞️', 'İ': '🧵', 'J': '🤸', 'K': '✏️', 'L': '💡', 'M': '🍎', 'N': '👵', 'O': '🏹',
+                'Ö': '👨‍🏫', 'P': '🍰', 'R': '🎨', 'S': '⏰', 'Ş': '🎩', 'T': '⚽', 'U': '✈️', 'Ü': '🔌', 'V': '🏺',
+                'Y': '🛏️', 'Z': '🫒'
+            },
+            ciftlik: {
+                'A': '🐴', 'B': '🐄', 'C': '🐣', 'Ç': '👨‍🌾', 'D': '🐮', 'E': '🫏', 'F': '🐭', 'G': '🕊️', 'Ğ': '🏚️',
+                'H': '🐓', 'I': '🐦', 'İ': '🐄', 'J': '🏇', 'K': '🐑', 'L': '🦩', 'M': '🦬', 'N': '🐔', 'O': '🦆',
+                'Ö': '🐂', 'P': '🦜', 'R': '🌿', 'S': '🐄', 'Ş': '🦅', 'T': '🐔', 'U': '🐞', 'Ü': '🦋', 'V': '🦎',
+                'Y': '🐍', 'Z': '🦒'
+            },
+            ev: {
+                'A': '🪞', 'B': '🥤', 'C': '🪟', 'Ç': '🍴', 'D': '🗄️', 'E': '💡', 'F': '🔥', 'G': '👓', 'Ğ': '🧈',
+                'H': '🧺', 'I': '💡', 'İ': '🪡', 'J': '🪒', 'K': '🚪', 'L': '🕯️', 'M': '🪑', 'N': '🧺', 'O': '🚪',
+                'Ö': '🧣', 'P': '🪟', 'R': '📚', 'S': '🪑', 'Ş': '☂️', 'T': '🍽️', 'U': '🔌', 'Ü': '🧺', 'V': '🏺',
+                'Y': '🛏️', 'Z': '🔔'
+            }
+        };
+
+        // Kelime-Emoji eşleştirme sözlüğü
+        const WORD_TO_EMOJI = {
+            // Hayvanlar
+            'at': '🐴', 'atın': '🐴', 'inek': '🐄', 'ineğin': '🐄', 'buzağı': '🐄', 'buzağının': '🐄',
+            'civciv': '🐣', 'civcivın': '🐣', 'çoban': '👨‍🌾', 'çobanın': '👨‍🌾', 'dana': '🐮', 'danayın': '🐮',
+            'eşek': '🫏', 'eşeğin': '🫏', 'fare': '🐭', 'farenin': '🐭', 'güvercin': '🕊️', 'güvercinin': '🕊️',
+            'ağıl': '🏚️', 'ağılın': '🏚️', 'horoz': '🐓', 'horozun': '🐓', 'kırlangıç': '🐦', 'kırlangıcın': '🐦',
+            'jokey': '🏇', 'jokeyın': '🏇', 'koyun': '🐑', 'koyunun': '🐑', 'leylek': '🦩', 'leylek\'in': '🦩',
+            'manda': '🦬', 'mandanın': '🦬', 'maymun': '🐵', 'maymunun': '🐵', 'nene': '🐔', 'nenenin': '🐔',
+            'ördek': '🦆', 'ördeğin': '🦆', 'ordek': '🦆', 'ordek\'in': '🦆', 'ordeğin': '🦆', 'öredeğin': '🦆',
+            'öküz': '🐂', 'öküzün': '🐂', 'pelikan': '🦜', 'pelikannın': '🦜',
+            'reyhan': '🌿', 'reyhanın': '🌿', 'sığır': '🐄', 'sığırın': '🐄', 'şahin': '🦅', 'şahinın': '🦅',
+            'tavuk': '🐔', 'tavuğun': '🐔', 'uğurböceği': '🐞', 'uğurböceğinin': '🐞', 'ülkü': '🦋', 'ülkünün': '🦋',
+            'varan': '🦎', 'varanın': '🦎', 'yılan': '🐍', 'yılanın': '🐍', 'zürafa': '🦒', 'zürafa\'nın': '🦒',
+            'kedi': '🐱', 'kedinin': '🐱', 'köpek': '🐶', 'köpeğin': '🐶', 'kuş': '🐦', 'kuşun': '🐦',
+            'balık': '🐟', 'balığın': '🐟', 'kelebek': '🦋', 'kelebeğin': '🦋', 'arı': '🐝', 'arının': '🐝',
+            
+            // Ev Eşyaları
+            'ayna': '🪞', 'aynanın': '🪞', 'bardak': '🥤', 'bardağın': '🥤', 'cam': '🪟', 'camın': '🪟',
+            'çatal': '🍴', 'çatalın': '🍴', 'dolap': '🗄️', 'dolabın': '🗄️', 'elektrik': '💡', 'elektriğin': '💡',
+            'fırın': '🔥', 'fırının': '🔥', 'gözlük': '👓', 'gözlüğün': '👓', 'yağ': '🧈', 'yağın': '🧈',
+            'halı': '🧺', 'halının': '🧺', 'ışık': '💡', 'ışığın': '💡', 'iğne': '🪡', 'iğnenin': '🪡',
+            'jilet': '🪒', 'jiletın': '🪒', 'kapı': '🚪', 'kapının': '🚪', 'lamba': '🕯️', 'lambanın': '🕯️',
+            'masa': '🪑', 'masanın': '🪑', 'nişasta': '🧺', 'nişastanın': '🧺', 'oda': '🚪', 'odanın': '🚪',
+            'örtü': '🧣', 'örtünün': '🧣', 'perde': '🪟', 'perdenin': '🪟', 'raf': '📚', 'rafın': '📚',
+            'sandalye': '🪑', 'sandalyenin': '🪑', 'şemsiye': '☂️', 'şemsiyenin': '☂️', 'tabak': '🍽️', 'tabağın': '🍽️',
+            'ütü': '🔌', 'ütünün': '🔌', 'vazo': '🏺', 'vazonun': '🏺', 'yastık': '🛏️', 'yastığın': '🛏️',
+            'zil': '🔔', 'zilin': '🔔', 'kaşık': '🥄', 'kaşığın': '🥄', 'bıçak': '🔪', 'bıçağın': '🔪',
+            
+            // Diğer
+            'anne': '👩', 'annenin': '👩', 'baba': '👨', 'babanın': '👨', 'çiçek': '🌸', 'çiçeğin': '🌸',
+            'dede': '👴', 'dedenin': '👴', 'ev': '🏠', 'evin': '🏠', 'fıstık': '🥜', 'fıstığın': '🥜',
+            'güneş': '☀️', 'güneşin': '☀️', 'dağ': '⛰️', 'dağın': '⛰️', 'hala': '👩‍🦰', 'halanın': '👩‍🦰',
+            'ırmak': '🏞️', 'ırmağın': '🏞️', 'iplik': '🧵', 'ipliğin': '🧵', 'jimnastik': '🤸', 'jimnastiğin': '🤸',
+            'kalem': '✏️', 'kalemin': '✏️', 'meyve': '🍎', 'meyvenin': '🍎', 'nene': '👵', 'nenenin': '👵',
+            'ok': '🏹', 'okumun': '🏹', 'öğretmen': '👨‍🏫', 'öğretmenin': '👨‍🏫', 'pasta': '🍰', 'pastanın': '🍰',
+            'resim': '🎨', 'resminin': '🎨', 'saat': '⏰', 'saatin': '⏰', 'şapka': '🎩', 'şapkanın': '🎩',
+            'top': '⚽', 'topun': '⚽', 'uçak': '✈️', 'uçağın': '✈️', 'zeytin': '🫒', 'zeytinin': '🫒'
+        };
+
+        // Prompt'tan emoji çıkar
+        function getEmojiFromPrompt(prompt) {
+            // Prompt'u küçük harfe çevir
+            const lowerPrompt = prompt.toLowerCase();
+            
+            // Önce tam kelime eşleşmesi ara
+            const words = lowerPrompt.split(' ');
+            for (let word of words) {
+                // Noktalama işaretlerini temizle
+                word = word.replace(/[.,!?;:'"]/g, '');
+                if (WORD_TO_EMOJI[word]) {
+                    return WORD_TO_EMOJI[word];
+                }
+            }
+            
+            // Eğer tam eşleşme yoksa, kısmi eşleşme ara
+            for (let key in WORD_TO_EMOJI) {
+                if (lowerPrompt.includes(key)) {
+                    return WORD_TO_EMOJI[key];
+                }
+            }
+            
+            return null;
+        }
+
+        // Global state
+        let currentTheme = 'alfabe';
+        let customPrompts = {}; // Tema bazlı: { alfabe: { A: 'prompt' }, ciftlik: { A: 'prompt' } }
+        let speechRate = 0.75; // Daha yavaş (çocuklar için)
+        let speechPitch = 1.5; // Daha tatlı/yüksek ses
+        let selectedVoice = null;
+        let voices = [];
+        let apiKey = '';
+        let ttsEngine = 'browser';
+        let googleVoice = 'tr-TR-Wavenet-A';
+        let audioCache = {};
+        let totalUsage = 0;
+        let maxLimit = 90;
+        let unlimitedUsage = false;
+        let letterClickCount = {}; // Her harf için tıklama sayacı
+        let fixedPrompts = {}; // Sabit tutulan harfler: { alfabe: { A: true } }
+
+        // Initialize
+        function init() {
+            loadSettings();
+            loadVoices();
+            renderLetterGrid();
+            renderPromptsGrid();
+            updateUsageStats();
+        }
+
+        // Load voices
+        function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            const voiceSelect = document.getElementById('voiceSelect');
+            voiceSelect.innerHTML = '<option value="">Varsayılan</option>';
+            
+            const turkishVoices = voices.filter(v => v.lang.startsWith('tr'));
+            turkishVoices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                // Kadın seslerini vurgula
+                const isFemale = voice.name.toLowerCase().includes('female') || 
+                                 voice.name.toLowerCase().includes('kadın') ||
+                                 voice.name.toLowerCase().includes('woman');
+                option.textContent = voice.name + (isFemale ? ' 👧 (Önerilen)' : '');
+                voiceSelect.appendChild(option);
+            });
+
+            const savedVoice = localStorage.getItem('huma_voice');
+            if (savedVoice) {
+                voiceSelect.value = savedVoice;
+                selectedVoice = voices.find(v => v.name === savedVoice);
+            } else {
+                // Otomatik kadın sesi seç
+                const femaleVoice = turkishVoices.find(v => 
+                    v.name.toLowerCase().includes('female') || 
+                    v.name.toLowerCase().includes('kadın')
+                );
+                if (femaleVoice) {
+                    selectedVoice = femaleVoice;
+                    voiceSelect.value = femaleVoice.name;
+                }
+            }
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // Load settings
+        function loadSettings() {
+            const savedTheme = localStorage.getItem('huma_theme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+                document.getElementById('themeSelect').value = savedTheme;
+            }
+
+            const savedPrompts = localStorage.getItem('huma_prompts');
+            if (savedPrompts) {
+                try {
+                    customPrompts = JSON.parse(savedPrompts);
+                    // Eski format uyumluluğu (düz obje ise tema bazlı yap)
+                    if (customPrompts && !customPrompts.alfabe && !customPrompts.ciftlik && !customPrompts.ev) {
+                        const oldPrompts = {...customPrompts};
+                        customPrompts = { alfabe: oldPrompts, ciftlik: {}, ev: {} };
+                    }
+                } catch (e) {
+                    customPrompts = { alfabe: {}, ciftlik: {}, ev: {} };
+                }
+            } else {
+                customPrompts = { alfabe: {}, ciftlik: {}, ev: {} };
+            }
+
+            const savedFixed = localStorage.getItem('huma_fixed_prompts');
+            if (savedFixed) {
+                try {
+                    fixedPrompts = JSON.parse(savedFixed);
+                } catch (e) {
+                    fixedPrompts = { alfabe: {}, ciftlik: {}, ev: {} };
+                }
+            } else {
+                fixedPrompts = { alfabe: {}, ciftlik: {}, ev: {} };
+            }
+
+            const savedRate = localStorage.getItem('huma_rate');
+            if (savedRate) {
+                speechRate = parseFloat(savedRate);
+            } else {
+                speechRate = 0.75; // Varsayılan: yavaş (çocuklar için)
+            }
+            document.getElementById('speechRate').value = speechRate;
+            document.getElementById('rateValue').textContent = speechRate;
+
+            const savedPitch = localStorage.getItem('huma_pitch');
+            if (savedPitch) {
+                speechPitch = parseFloat(savedPitch);
+            } else {
+                speechPitch = 1.5; // Varsayılan: tatlı/yüksek ses
+            }
+            document.getElementById('speechPitch').value = speechPitch;
+            document.getElementById('pitchValue').textContent = speechPitch;
+
+            const savedApiKey = localStorage.getItem('huma_apikey');
+            if (savedApiKey) {
+                apiKey = savedApiKey;
+                document.getElementById('apiKey').value = savedApiKey;
+            }
+
+            const savedEngine = localStorage.getItem('huma_engine');
+            if (savedEngine) {
+                ttsEngine = savedEngine;
+                document.getElementById('ttsEngine').value = savedEngine;
+                updateEngineUI();
+            }
+
+            const savedGoogleVoice = localStorage.getItem('huma_google_voice');
+            if (savedGoogleVoice) {
+                googleVoice = savedGoogleVoice;
+                document.getElementById('googleVoiceSelect').value = savedGoogleVoice;
+            }
+
+            const savedUsage = localStorage.getItem('huma_total_usage');
+            if (savedUsage) {
+                totalUsage = parseInt(savedUsage);
+            }
+
+            const savedLimit = localStorage.getItem('huma_max_limit');
+            if (savedLimit) {
+                maxLimit = parseInt(savedLimit);
+                document.getElementById('maxLimit').value = maxLimit;
+            }
+
+            const savedUnlimited = localStorage.getItem('huma_unlimited');
+            if (savedUnlimited === 'true') {
+                unlimitedUsage = true;
+                document.getElementById('unlimitedUsage').checked = true;
+                document.getElementById('limitGroup').style.display = 'none';
+            }
+
+            const savedCache = localStorage.getItem('huma_audio_cache');
+            if (savedCache) {
+                try {
+                    audioCache = JSON.parse(savedCache);
+                } catch (e) {
+                    audioCache = {};
+                }
+            }
+
+            // Update cache count
+            document.getElementById('cacheCount').textContent = Object.keys(audioCache).length;
+        }
+
+        // Update usage stats
+        function updateUsageStats() {
+            document.getElementById('totalUsage').textContent = totalUsage;
+            document.getElementById('currentLimit').textContent = maxLimit;
+            const remaining = unlimitedUsage ? '∞' : Math.max(0, maxLimit - totalUsage);
+            document.getElementById('remainingQuota').textContent = remaining;
+            document.getElementById('cacheCount').textContent = Object.keys(audioCache).length;
+        }
+
+        // Toggle unlimited
+        function toggleUnlimited() {
+            unlimitedUsage = document.getElementById('unlimitedUsage').checked;
+            localStorage.setItem('huma_unlimited', unlimitedUsage);
+            document.getElementById('limitGroup').style.display = unlimitedUsage ? 'none' : 'block';
+            updateUsageStats();
+        }
+
+        // Save limit
+        function saveLimit() {
+            maxLimit = parseInt(document.getElementById('maxLimit').value);
+            localStorage.setItem('huma_max_limit', maxLimit);
+            updateUsageStats();
+        }
+
+        // Update engine UI
+        function updateEngineUI() {
+            const googleGroup = document.getElementById('googleVoiceGroup');
+            const browserGroup = document.getElementById('browserVoiceGroup');
+            
+            if (ttsEngine === 'google') {
+                googleGroup.style.display = 'block';
+                browserGroup.style.display = 'none';
+            } else {
+                googleGroup.style.display = 'none';
+                browserGroup.style.display = 'block';
+            }
+        }
+
+        // Save API key
+        function saveApiKey() {
+            apiKey = document.getElementById('apiKey').value.trim();
+            localStorage.setItem('huma_apikey', apiKey);
+            if (apiKey) {
+                alert('✅ API Key kaydedildi!');
+            }
+        }
+
+        // Save TTS engine
+        function saveTtsEngine() {
+            ttsEngine = document.getElementById('ttsEngine').value;
+            localStorage.setItem('huma_engine', ttsEngine);
+            updateEngineUI();
+        }
+
+        // Save Google voice
+        function saveGoogleVoice() {
+            googleVoice = document.getElementById('googleVoiceSelect').value;
+            localStorage.setItem('huma_google_voice', googleVoice);
+        }
+
+        // Render letter grid
+        function renderLetterGrid() {
+            const grid = document.getElementById('letterGrid');
+            grid.innerHTML = '';
+
+            TURKISH_LETTERS.forEach(letter => {
+                const card = document.createElement('button');
+                card.className = 'letter-card';
+                card.setAttribute('data-letter', letter);
+                
+                // Tema bazlı prompt al
+                const themePrompts = customPrompts[currentTheme] || {};
+                const prompt = themePrompts[letter] || THEMES[currentTheme][letter];
+                let icon = getEmojiFromPrompt(prompt);
+                
+                // Eğer prompt'tan emoji bulunamazsa, tema varsayılanını kullan
+                if (!icon) {
+                    icon = THEME_IMAGES[currentTheme][letter] || '❓';
+                }
+                
+                card.innerHTML = `
+                    <div class="letter-display">
+                        <div class="letter-uppercase">${letter}</div>
+                        <div class="letter-lowercase">${LOWERCASE[letter]}</div>
+                    </div>
+                    <div class="letter-icon">
+                        <div>${icon}</div>
+                    </div>
+                `;
+                card.onclick = () => playLetter(letter, card);
+                grid.appendChild(card);
+            });
+        }
+
+        // Play letter
+        async function playLetter(letter, card) {
+            // Animate
+            card.classList.add('animate-bounce');
+            setTimeout(() => card.classList.remove('animate-bounce'), 600);
+
+            // Get prompt
+            let prompt;
+            const themePrompts = customPrompts[currentTheme] || {};
+            const isFixed = fixedPrompts[currentTheme] && fixedPrompts[currentTheme][letter];
+            
+            if (themePrompts[letter] && isFixed) {
+                // Sabit prompt varsa sadece onu kullan
+                prompt = themePrompts[letter];
+            } else {
+                // Döngüsel örnekler: tema varsayılanları arasında dön
+                if (!letterClickCount[currentTheme]) {
+                    letterClickCount[currentTheme] = {};
+                }
+                if (!letterClickCount[currentTheme][letter]) {
+                    letterClickCount[currentTheme][letter] = 0;
+                }
+                
+                // Tema için tüm prompt varyasyonlarını al
+                const allPrompts = getAllPromptsForLetter(letter);
+                const index = letterClickCount[currentTheme][letter] % allPrompts.length;
+                prompt = allPrompts[index];
+                
+                // Sayacı artır
+                letterClickCount[currentTheme][letter]++;
+            }
+
+            // Emoji'yi güncelle
+            updateCardEmoji(card, prompt);
+
+            // Speak based on engine
+            if (ttsEngine === 'google' && apiKey) {
+                await speakWithGoogle(prompt);
+            } else {
+                speakWithBrowser(prompt);
+            }
+        }
+
+        // Kartın emojisini güncelle
+        function updateCardEmoji(card, prompt) {
+            const iconDiv = card.querySelector('.letter-icon div');
+            if (iconDiv) {
+                let emoji = getEmojiFromPrompt(prompt);
+                if (!emoji) {
+                    // Prompt'tan bulunamazsa tema varsayılanını kullan
+                    const letter = card.getAttribute('data-letter') || card.querySelector('.letter-uppercase').textContent;
+                    emoji = THEME_IMAGES[currentTheme][letter] || '❓';
+                }
+                iconDiv.textContent = emoji;
+            }
+        }
+
+        // Harf için tüm prompt varyasyonlarını getir
+        function getAllPromptsForLetter(letter) {
+            const prompts = [];
+            const themePrompts = customPrompts[currentTheme] || {};
+            
+            // Özel prompt varsa ekle
+            if (themePrompts[letter]) {
+                prompts.push(themePrompts[letter]);
+            }
+            
+            // Tema varsayılanını ekle
+            if (THEMES[currentTheme][letter]) {
+                prompts.push(THEMES[currentTheme][letter]);
+            }
+            
+            // Eğer hiç prompt yoksa, sadece harfi söyle
+            if (prompts.length === 0) {
+                prompts.push(`${letter} harfi`);
+            }
+            
+            return prompts;
+        }
+
+        // Speak with browser
+        function speakWithBrowser(text) {
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'tr-TR';
+            utterance.rate = speechRate;
+            utterance.pitch = speechPitch;
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            speechSynthesis.speak(utterance);
+        }
+
+        // Speak with Google TTS
+        async function speakWithGoogle(text) {
+            try {
+                // Check API key
+                if (!apiKey) {
+                    alert('⚠️ Google TTS kullanmak için API key girmeniz gerekiyor!');
+                    speakWithBrowser(text);
+                    return;
+                }
+
+                // Check cache
+                const cacheKey = `${text}_${googleVoice}_${speechRate}_${speechPitch}`;
+                if (audioCache[cacheKey]) {
+                    playAudioData(audioCache[cacheKey]);
+                    updateUsageStats();
+                    return;
+                }
+
+                // Check limit (sessizce atla, popup gösterme)
+                if (!unlimitedUsage && totalUsage >= maxLimit) {
+                    console.log('⚠️ Kullanım limitine ulaşıldı, tarayıcı sesine geçiliyor');
+                    speakWithBrowser(text);
+                    return;
+                }
+
+                // Call Google TTS API
+                const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        input: { text: text },
+                        voice: {
+                            languageCode: 'tr-TR',
+                            name: googleVoice
+                        },
+                        audioConfig: {
+                            audioEncoding: 'MP3',
+                            speakingRate: speechRate,
+                            pitch: (speechPitch - 1) * 20 // Convert to semitones
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Google TTS API error');
+                }
+
+                const data = await response.json();
+                const audioContent = data.audioContent;
+
+                // Update usage
+                totalUsage += text.length;
+                localStorage.setItem('huma_total_usage', totalUsage);
+
+                // Cache audio
+                audioCache[cacheKey] = audioContent;
+                localStorage.setItem('huma_audio_cache', JSON.stringify(audioCache));
+
+                // Play audio
+                playAudioData(audioContent);
+                updateUsageStats();
+            } catch (error) {
+                console.error('Google TTS error:', error);
+                alert('❌ Google TTS hatası! Tarayıcı sesine geçiliyor...');
+                // Fallback to browser TTS
+                speakWithBrowser(text);
+            }
+        }
+
+        // Play audio data
+        function playAudioData(base64Audio) {
+            const audio = new Audio('data:audio/mp3;base64,' + base64Audio);
+            audio.play();
+        }
+
+        // Change theme
+        function changeTheme() {
+            currentTheme = document.getElementById('themeSelect').value;
+            localStorage.setItem('huma_theme', currentTheme);
+            renderLetterGrid(); // Re-render grid with new theme images
+            renderPromptsGrid();
+        }
+
+        // Save voice
+        function saveVoice() {
+            const voiceName = document.getElementById('voiceSelect').value;
+            localStorage.setItem('huma_voice', voiceName);
+            selectedVoice = voices.find(v => v.name === voiceName);
+        }
+
+        // Update rate
+        function updateRate(value) {
+            speechRate = parseFloat(value);
+            document.getElementById('rateValue').textContent = value;
+            localStorage.setItem('huma_rate', value);
+        }
+
+        // Update pitch
+        function updatePitch(value) {
+            speechPitch = parseFloat(value);
+            document.getElementById('pitchValue').textContent = value;
+            localStorage.setItem('huma_pitch', value);
+        }
+
+        // Test voice with specific settings
+        function testVoice(rate, pitch) {
+            // Geçici olarak ayarları değiştir
+            const originalRate = speechRate;
+            const originalPitch = speechPitch;
+            
+            speechRate = rate;
+            speechPitch = pitch;
+            
+            // Slider'ları güncelle
+            document.getElementById('speechRate').value = rate;
+            document.getElementById('rateValue').textContent = rate;
+            document.getElementById('speechPitch').value = pitch;
+            document.getElementById('pitchValue').textContent = pitch;
+            
+            // Test metni oku
+            const testText = "Merhaba! Ben HUMA. A harfi Annenin A'sı. İ harfi İneğin İ'si.";
+            
+            if (ttsEngine === 'google' && apiKey) {
+                speakWithGoogle(testText);
+            } else {
+                speakWithBrowser(testText);
+            }
+            
+            // Kullanıcıya bilgi ver
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '▶️ Çalıyor...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 5000);
+        }
+
+        // Set child-friendly voice settings
+        function setChildFriendlyVoice() {
+            speechRate = 0.75;
+            speechPitch = 1.5;
+            
+            document.getElementById('speechRate').value = speechRate;
+            document.getElementById('rateValue').textContent = speechRate;
+            document.getElementById('speechPitch').value = speechPitch;
+            document.getElementById('pitchValue').textContent = speechPitch;
+            
+            localStorage.setItem('huma_rate', speechRate);
+            localStorage.setItem('huma_pitch', speechPitch);
+            
+            alert('✅ Çocuk dostu ses ayarları uygulandı!\n🐢 Hız: Yavaş (0.75)\n🎤 Ton: Tatlı (1.5)');
+        }
+
+        // Render prompts grid
+        function renderPromptsGrid() {
+            const grid = document.getElementById('promptsGrid');
+            grid.innerHTML = '';
+
+            TURKISH_LETTERS.forEach(letter => {
+                const group = document.createElement('div');
+                group.className = 'prompt-group';
+                
+                const themePrompts = customPrompts[currentTheme] || {};
+                const themeFixed = fixedPrompts[currentTheme] || {};
+                const customPrompt = themePrompts[letter] || '';
+                const isFixed = themeFixed[letter] || false;
+                
+                if (customPrompt) {
+                    group.classList.add('has-custom');
+                }
+
+                const defaultPrompt = THEMES[currentTheme][letter];
+
+                group.innerHTML = `
+                    <label>${letter}</label>
+                    <input type="text" 
+                           data-letter="${letter}" 
+                           value="${customPrompt}"
+                           placeholder="${defaultPrompt}"
+                           onblur="savePrompt('${letter}', this.value)"
+                           oninput="updatePromptUI('${letter}', this.value)">
+                    <div style="display: flex; gap: 5px; margin-top: 5px;">
+                        <label style="display: flex; align-items: center; gap: 5px; font-size: 0.85rem; cursor: pointer;">
+                            <input type="checkbox" 
+                                   data-letter="${letter}"
+                                   ${isFixed ? 'checked' : ''}
+                                   onchange="toggleFixed('${letter}', this.checked)"
+                                   ${!customPrompt ? 'disabled' : ''}>
+                            📌 Sabit Tut
+                        </label>
+                        <button class="reset-btn" 
+                                onclick="resetPrompt('${letter}')"
+                                style="position: static; margin: 0;"
+                                ${!customPrompt ? 'disabled' : ''}>↺</button>
+                    </div>
+                `;
+                grid.appendChild(group);
+            });
+        }
+
+        // Save prompt (tema bazlı)
+        function savePrompt(letter, value) {
+            value = value.trim();
+            if (!customPrompts[currentTheme]) {
+                customPrompts[currentTheme] = {};
+            }
+            
+            if (value) {
+                customPrompts[currentTheme][letter] = value;
+            } else {
+                delete customPrompts[currentTheme][letter];
+                // Prompt silindiğinde sabit tut'u da kaldır
+                if (fixedPrompts[currentTheme]) {
+                    delete fixedPrompts[currentTheme][letter];
+                }
+            }
+            
+            localStorage.setItem('huma_prompts', JSON.stringify(customPrompts));
+            localStorage.setItem('huma_fixed_prompts', JSON.stringify(fixedPrompts));
+            renderLetterGrid(); // Re-render to update emoji
+        }
+
+        // Toggle fixed prompt
+        function toggleFixed(letter, isFixed) {
+            if (!fixedPrompts[currentTheme]) {
+                fixedPrompts[currentTheme] = {};
+            }
+            
+            if (isFixed) {
+                fixedPrompts[currentTheme][letter] = true;
+            } else {
+                delete fixedPrompts[currentTheme][letter];
+            }
+            
+            localStorage.setItem('huma_fixed_prompts', JSON.stringify(fixedPrompts));
+        }
+
+        // Update prompt UI
+        function updatePromptUI(letter, value) {
+            const input = document.querySelector(`input[data-letter="${letter}"][type="text"]`);
+            const group = input.closest('.prompt-group');
+            const resetBtn = group.querySelector('.reset-btn');
+            const checkbox = group.querySelector(`input[type="checkbox"][data-letter="${letter}"]`);
+
+            if (value.trim()) {
+                group.classList.add('has-custom');
+                resetBtn.disabled = false;
+                if (checkbox) checkbox.disabled = false;
+            } else {
+                group.classList.remove('has-custom');
+                resetBtn.disabled = true;
+                if (checkbox) {
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                }
+            }
+        }
+
+        // Reset prompt
+        function resetPrompt(letter) {
+            if (customPrompts[currentTheme]) {
+                delete customPrompts[currentTheme][letter];
+            }
+            if (fixedPrompts[currentTheme]) {
+                delete fixedPrompts[currentTheme][letter];
+            }
+            
+            localStorage.setItem('huma_prompts', JSON.stringify(customPrompts));
+            localStorage.setItem('huma_fixed_prompts', JSON.stringify(fixedPrompts));
+            
+            const input = document.querySelector(`input[data-letter="${letter}"][type="text"]`);
+            const group = input.closest('.prompt-group');
+            const resetBtn = group.querySelector('.reset-btn');
+            const checkbox = group.querySelector(`input[type="checkbox"][data-letter="${letter}"]`);
+            
+            input.value = '';
+            group.classList.remove('has-custom');
+            resetBtn.disabled = true;
+            if (checkbox) {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            }
+            renderLetterGrid(); // Re-render to update emoji
+        }
+
+        // Modal functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('settingsModal').onclick = function(e) {
+            if (e.target === this) {
+                closeSettings();
+            }
+        };
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
