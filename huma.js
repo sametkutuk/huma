@@ -1251,12 +1251,8 @@ document.getElementById('settingsModal').onclick = function(e) {
 window.onload = init;
 
 // ═══════════════════════════════════════════════════════════════════
-// KEYBOARD SUPPORT & SECRET PASSWORD
+// KEYBOARD SUPPORT
 // ═══════════════════════════════════════════════════════════════════
-
-let secretPassword = '';
-let secretTimeout = null;
-const SECRET_WORD = 'ayarlar';
 
 document.addEventListener('keydown', (e) => {
     const settingsModalActive = document.getElementById('settingsModal').classList.contains('active');
@@ -1264,47 +1260,12 @@ document.addEventListener('keydown', (e) => {
     // ESC ile ayarları kapat
     if (e.key === 'Escape') {
         closeSettings();
-        secretPassword = '';
         return;
     }
 
     // Ayarlar modalı açıkken klavye girişlerini devre dışı bırak
     if (settingsModalActive) {
         return;
-    }
-
-    // Gizli şifre kontrolü (ayarlar modalı kapalıyken)
-    // Türkçe karakterleri normalize et
-    let key = e.key.toLowerCase();
-    
-    // Türkçe karakter dönüşümleri
-    const turkishMap = {
-        'ı': 'ı', 'i': 'i', 'ş': 'ş', 's': 's',
-        'ğ': 'ğ', 'g': 'g', 'ü': 'ü', 'u': 'u',
-        'ö': 'ö', 'o': 'o', 'ç': 'ç', 'c': 'c'
-    };
-    
-    if (key.length === 1 && /[a-zığüşöç]/.test(key)) {
-        secretPassword += key;
-        
-        // Timeout'u sıfırla (3 saniye içinde yazılmazsa sıfırla)
-        clearTimeout(secretTimeout);
-        secretTimeout = setTimeout(() => {
-            secretPassword = '';
-        }, 3000);
-        
-        // Şifre kontrolü
-        if (secretPassword === SECRET_WORD) {
-            openSettings();
-            secretPassword = '';
-            clearTimeout(secretTimeout);
-            return;
-        }
-        
-        // Yanlış yoldaysa sıfırla
-        if (!SECRET_WORD.startsWith(secretPassword)) {
-            secretPassword = '';
-        }
     }
 
     // Tema'ya göre hangi karakterleri dinleyeceğimize karar ver
@@ -1319,3 +1280,77 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// ═══════════════════════════════════════════════════════════════════
+// SECRET TAP - HUMA başlığına 5 kere tıklama ile ayarlar erişimi
+// ═══════════════════════════════════════════════════════════════════
+
+let tapCount = 0;
+let tapTimeout = null;
+const TAP_THRESHOLD = 5; // 5 kere tıklama
+const TAP_TIME_WINDOW = 2000; // 2 saniye içinde
+
+// HUMA başlığına tıklama dinleyicisi ekle
+document.addEventListener('DOMContentLoaded', () => {
+    const titleElement = document.querySelector('h1');
+    
+    if (titleElement) {
+        // Başlığı tıklanabilir yap
+        titleElement.style.cursor = 'pointer';
+        titleElement.style.userSelect = 'none';
+        
+        titleElement.addEventListener('click', handleSecretTap);
+        titleElement.addEventListener('touchend', handleSecretTap);
+    }
+});
+
+function handleSecretTap(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    tapCount++;
+    
+    // İlk tıklamada timeout başlat
+    if (tapCount === 1) {
+        tapTimeout = setTimeout(() => {
+            tapCount = 0;
+        }, TAP_TIME_WINDOW);
+    }
+    
+    // Eşik değere ulaşıldıysa ayarları aç
+    if (tapCount >= TAP_THRESHOLD) {
+        clearTimeout(tapTimeout);
+        tapCount = 0;
+        openSettings();
+        
+        // Görsel geri bildirim
+        const feedback = document.createElement('div');
+        feedback.textContent = '⚙️';
+        feedback.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            animation: fadeOut 1s forwards;
+            z-index: 10000;
+            pointer-events: none;
+        `;
+        document.body.appendChild(feedback);
+        
+        setTimeout(() => feedback.remove(), 1000);
+    }
+}
+
+// Fade out animasyonu için CSS ekle
+if (!document.getElementById('secretTapStyles')) {
+    const style = document.createElement('style');
+    style.id = 'secretTapStyles';
+    style.textContent = `
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            to { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+        }
+    `;
+    document.head.appendChild(style);
+}

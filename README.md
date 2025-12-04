@@ -29,7 +29,7 @@
 - **Özel Açıklamalar**: Her harf için kendi açıklamanızı yazabilirsiniz
 - **Emoji Görselleri**: Her harf için otomatik emoji gösterimi
 - **Klavye Desteği**: Klavyeden harflere basarak sesleri çalabilirsiniz
-- **Gizli Ayarlar**: "ayarlar" yazarak ayarlara erişin (çocuk güvenliği)
+- **Gizli Ayarlar**: HUMA başlığına 5 kere hızlıca tıklama (çocuk güvenliği)
 
 ### 💰 Maliyet Kontrolü
 - **Kullanım Limiti**: API kullanımını sınırlayabilirsiniz
@@ -39,7 +39,8 @@
 ## 🚀 Kullanım
 
 1. `huma.html` dosyasını tarayıcınızda açın
-2. Klavyeden **"ayarlar"** yazarak ayarlara girin (çocuk güvenliği için gizli)
+2. **Ayarlara erişim** (çocuk güvenliği için gizli):
+   - 🎯 **HUMA** başlığına **5 kere hızlıca** tıklayın (tüm cihazlarda çalışır)
 3. (Opsiyonel) Google Cloud API key'inizi girin
 4. Tema seçin ve harflere tıklayarak öğrenmeye başlayın!
 5. Ayarlar açıkken **ESC** tuşu ile kapatabilirsiniz
@@ -69,7 +70,12 @@
 
 ## 📝 Değişiklik Notları
 
-### v3.0 (Son Sürüm)
+### v3.1 (Son Sürüm)
+- ✅ **Basitleştirilmiş Gizli Erişim**: HUMA başlığına 5 kere tıklama (tüm cihazlarda)
+- ✅ **Direkt Uygulama Açılışı**: Landing page kaldırıldı
+- ✅ **Hakkında Bölümü**: Ayarlar içinde bilgi ve özellikler
+
+### v3.0
 - ✅ **Sayılar Teması**: 0-9 arası sayıları öğrenme
 - ✅ **Accordion Tasarım**: Ayarlar daha düzenli ve kullanışlı
 - ✅ **Prompt Checkbox Sistemi**: Hangi promptların çalacağını seçin
@@ -95,7 +101,7 @@
 - Her prompt'u **ayrı ayrı silebilirsiniz** (🗑️ butonu)
 - **Tema değiştirerek** farklı kelime gruplarıyla öğrenebilirsiniz
 - **Klavyeden** harflere basarak da sesleri çalabilirsiniz
-- **"ayarlar"** yazarak gizli ayarlara erişin
+- **Gizli ayarlara erişim:** HUMA başlığına **5 kere hızlıca** tıklayın
 - Ayarlar açıkken klavye sesleri çalmaz (yazı yazabilirsiniz)
 
 ## 📄 Lisans
