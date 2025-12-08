@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 HUMA - Alfabe Öğreniyorum</title>
+    <title>🎨 HUMA ile Öğreniyorum</title>
     <style>
         * {
             margin: 0;
@@ -29,9 +29,10 @@
 
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 30px;
+            text-align: center;
         }
 
         .header h1 {
@@ -40,6 +41,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 0 auto;
         }
 
         .settings-btn {
@@ -69,7 +71,8 @@
         }
 
         .letter-grid.numbers-theme {
-            grid-template-columns: repeat(5, 1fr);
+            /* Responsive: Ekran boyutuna göre otomatik sütun */
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             max-width: 700px;
             margin: 0 auto 20px auto;
             gap: 20px;
@@ -908,8 +911,18 @@
             }
 
             .letter-grid.numbers-theme {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 8px;
+                /* Mobil: 4 sütun (4-4-2 düzeni) */
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                justify-items: center;
+            }
+            
+            /* Son 2 sayıyı (8 ve 9) ortalamak için */
+            .letter-grid.numbers-theme .letter-card:nth-child(9),
+            .letter-grid.numbers-theme .letter-card:nth-child(10) {
+                grid-column: span 2;
+                max-width: calc(50% - 5px);
+                margin: 0 auto;
             }
 
             .letter-grid.numbers-theme .letter-uppercase {
@@ -934,7 +947,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>🎨 HUMA - Alfabe Öğreniyorum</h1>
+            <h1>🎨 HUMA ile Öğreniyorum</h1>
         </div>
         <div class="letter-grid" id="letterGrid"></div>
     </div>

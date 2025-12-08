@@ -644,6 +644,9 @@ async function playLetter(letter, card) {
     }
 
     updateCardEmoji(card, prompt);
+    
+    // Emoji animasyonu - butonun üzerinde göster
+    showEmojiAnimation(card, prompt);
 
     // Ses kayıtlarını kontrol et
     const recordedAudio = storage.get(`voice_recording_${letter}`);
@@ -696,6 +699,62 @@ function updateCardEmoji(card, prompt) {
         }
         iconDiv.textContent = emoji;
     }
+}
+
+function showEmojiAnimation(card, prompt) {
+    // Emoji'yi al
+    let emoji = getEmojiFromPrompt(prompt);
+    if (!emoji) {
+        const letter = card.getAttribute('data-letter');
+        emoji = THEME_IMAGES[currentTheme][letter] || '❓';
+    }
+    
+    // Butonun pozisyonunu al
+    const rect = card.getBoundingClientRect();
+    
+    // Animasyon elementi oluştur
+    const emojiElement = document.createElement('div');
+    emojiElement.textContent = emoji;
+    emojiElement.style.cssText = `
+        position: fixed;
+        left: ${rect.left + rect.width / 2}px;
+        top: ${rect.top}px;
+        font-size: 60px;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        animation: emojiFloat 1.5s ease-out forwards;
+    `;
+    
+    document.body.appendChild(emojiElement);
+    
+    // Animasyon bitince elementi kaldır
+    setTimeout(() => {
+        emojiElement.remove();
+    }, 1500);
+}
+
+// Emoji animasyon CSS'i ekle
+if (!document.getElementById('emojiAnimationStyles')) {
+    const style = document.createElement('style');
+    style.id = 'emojiAnimationStyles';
+    style.textContent = `
+        @keyframes emojiFloat {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -100px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -150px) scale(1);
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 function getAllPromptsForLetter(letter) {
@@ -1179,22 +1238,59 @@ function resetPrompt(letter) {
 // ═══════════════════════════════════════════════════════════════════
 
 async function startRecording(letter) {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // HTTPS kontrolü (mobil için gerekli)
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        alert('⚠️ Ses kaydı için HTTPS gereklidir!\n\nMobil cihazlarda ses kaydı sadece güvenli bağlantılarda (HTTPS) çalışır.\n\nÇözüm: Uygulamayı GitHub Pages üzerinden açın.');
+        return;
+    }
 
-        mediaRecorder = new MediaRecorder(stream, {
-            mimeType: 'audio/webm;codecs=opus'
+    // MediaDevices API desteği kontrolü
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('⚠️ Tarayıcınız ses kaydını desteklemiyor.\n\nLütfen güncel bir tarayıcı kullanın (Chrome, Firefox, Safari).');
+        return;
+    }
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            }
         });
+
+        // MediaRecorder desteği kontrolü
+        if (!window.MediaRecorder) {
+            alert('⚠️ Tarayıcınız ses kaydını desteklemiyor.');
+            stream.getTracks().forEach(track => track.stop());
+            return;
+        }
+
+        // Desteklenen MIME type'ı bul
+        let mimeType = 'audio/webm;codecs=opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+            mimeType = 'audio/webm';
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = 'audio/mp4';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = ''; // Varsayılan
+                }
+            }
+        }
+
+        mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
 
         audioChunks = [];
         currentRecordingLetter = letter;
 
         mediaRecorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
         };
 
         mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const audioBlob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
 
             const reader = new FileReader();
             reader.readAsDataURL(audioBlob);
@@ -1210,13 +1306,40 @@ async function startRecording(letter) {
             };
         };
 
+        mediaRecorder.onerror = (event) => {
+            console.error('MediaRecorder hatası:', event.error);
+            alert('❌ Kayıt sırasında hata oluştu. Lütfen tekrar deneyin.');
+            stream.getTracks().forEach(track => track.stop());
+        };
+
         mediaRecorder.start();
 
         document.getElementById('recordingSection').classList.add('active');
         document.getElementById('recordingLetter').textContent = letter;
 
     } catch (error) {
-        alert('Mikrofon erişimi reddedildi. Lütfen tarayıcı ayarlarından mikrofon iznini verin.');
+        console.error('Mikrofon erişim hatası:', error);
+        
+        let errorMessage = '❌ Mikrofon erişimi başarısız!\n\n';
+        
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+            errorMessage += '🔒 Mikrofon izni reddedildi.\n\n';
+            errorMessage += 'Çözüm:\n';
+            errorMessage += '1. Tarayıcı adres çubuğundaki kilit ikonuna tıklayın\n';
+            errorMessage += '2. Mikrofon iznini "İzin Ver" olarak ayarlayın\n';
+            errorMessage += '3. Sayfayı yenileyin ve tekrar deneyin';
+        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+            errorMessage += '🎤 Mikrofon bulunamadı.\n\n';
+            errorMessage += 'Lütfen cihazınızda mikrofon olduğundan emin olun.';
+        } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+            errorMessage += '⚠️ Mikrofon başka bir uygulama tarafından kullanılıyor.\n\n';
+            errorMessage += 'Lütfen diğer uygulamaları kapatın ve tekrar deneyin.';
+        } else {
+            errorMessage += `Hata: ${error.message}\n\n`;
+            errorMessage += 'Lütfen tarayıcı ayarlarından mikrofon iznini kontrol edin.';
+        }
+        
+        alert(errorMessage);
     }
 }
 
