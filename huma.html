@@ -912,17 +912,18 @@
 
             .letter-grid.numbers-theme {
                 /* Mobil: 4 sütun (4-4-2 düzeni) */
+                display: grid;
                 grid-template-columns: repeat(4, 1fr);
                 gap: 10px;
-                justify-items: center;
             }
             
             /* Son 2 sayıyı (8 ve 9) ortalamak için */
-            .letter-grid.numbers-theme .letter-card:nth-child(9),
+            .letter-grid.numbers-theme .letter-card:nth-child(9) {
+                grid-column: 2 / 3;
+            }
+            
             .letter-grid.numbers-theme .letter-card:nth-child(10) {
-                grid-column: span 2;
-                max-width: calc(50% - 5px);
-                margin: 0 auto;
+                grid-column: 3 / 4;
             }
 
             .letter-grid.numbers-theme .letter-uppercase {

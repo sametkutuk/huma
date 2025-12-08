@@ -643,9 +643,7 @@ async function playLetter(letter, card) {
         letterClickCount[currentTheme][letter]++;
     }
 
-    updateCardEmoji(card, prompt);
-    
-    // Emoji animasyonu - butonun üzerinde göster
+    // Sadece animasyon göster (buton içindeki emoji değişmesin)
     showEmojiAnimation(card, prompt);
 
     // Ses kayıtlarını kontrol et
