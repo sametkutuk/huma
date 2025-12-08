@@ -621,8 +621,20 @@ function renderLetterGrid() {
 // ═══════════════════════════════════════════════════════════════════
 
 async function playLetter(letter, card) {
-    card.classList.add('animate-bounce');
-    setTimeout(() => card.classList.remove('animate-bounce'), 600);
+    // Eğer zaten çalıyorsa, yeni tıklamayı engelle
+    if (card.classList.contains('playing')) {
+        return;
+    }
+    
+    // Butonu devre dışı bırak
+    card.classList.add('playing', 'animate-bounce');
+    card.style.pointerEvents = 'none';
+    
+    setTimeout(() => {
+        card.classList.remove('animate-bounce');
+        card.style.pointerEvents = 'auto';
+        card.classList.remove('playing');
+    }, 600);
 
     let prompt;
     const themePrompts = customPrompts[currentTheme] || {};

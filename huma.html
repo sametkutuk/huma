@@ -918,16 +918,36 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                height: calc(100vh - 20px);
+                padding: 10px 15px;
+                border-radius: 20px;
+            }
+            
+            .header {
+                margin-bottom: 8px;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
+                gap: 5px;
+            }
+            
             .letter-grid {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 8px;
+                gap: 6px;
+                padding: 5px;
             }
 
             .letter-grid.numbers-theme {
                 /* Mobil: 4 sütun (4-4-2 düzeni) */
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
+                gap: 8px;
             }
             
             /* Son 2 sayıyı (8 ve 9) ortalamak için */
@@ -940,19 +960,24 @@
             }
 
             .letter-grid.numbers-theme .letter-uppercase {
-                font-size: 2rem;
-            }
-
-            .letter-grid.numbers-theme .letter-lowercase {
-                font-size: 1rem;
-            }
-
-            .letter-uppercase {
                 font-size: 1.8rem;
             }
 
-            .letter-lowercase {
+            .letter-grid.numbers-theme .letter-lowercase {
                 font-size: 0.9rem;
+            }
+            
+            .letter-card {
+                padding: 8px 4px;
+                min-height: 60px;
+            }
+
+            .letter-uppercase {
+                font-size: 1.5rem;
+            }
+
+            .letter-lowercase {
+                font-size: 0.8rem;
             }
         }
     </style>
