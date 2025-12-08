@@ -4,7 +4,7 @@
 
 ## 🌐 Demo
 
-**[Uygulamayı Deneyin](https://yourusername.github.io/huma/)** _(GitHub Pages linkinizi buraya ekleyin)_
+**[Uygulamayı Deneyin](https://sametkutuk.github.io/huma/huma.html)** _(GitHub Pages linkinizi buraya ekleyin)_
 
 ## ✨ Özellikler
 
@@ -111,3 +111,4 @@ Bu proje eğitim amaçlı geliştirilmiştir.
 ## 🤝 Katkıda Bulunma
 
 Önerileriniz ve katkılarınız için teşekkür ederiz!
+
