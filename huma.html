@@ -939,15 +939,16 @@
             
             .letter-grid {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
+                gap: 8px;
                 padding: 5px;
+                align-content: start;
             }
 
             .letter-grid.numbers-theme {
                 /* Mobil: 4 sütun (4-4-2 düzeni) */
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 8px;
+                gap: 10px;
             }
             
             /* Son 2 sayıyı (8 ve 9) ortalamak için */
@@ -960,24 +961,25 @@
             }
 
             .letter-grid.numbers-theme .letter-uppercase {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
 
             .letter-grid.numbers-theme .letter-lowercase {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             
             .letter-card {
-                padding: 8px 4px;
-                min-height: 60px;
+                padding: 6px 4px;
+                min-height: 70px;
+                aspect-ratio: 0.85;
             }
 
             .letter-uppercase {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .letter-lowercase {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
         }
     </style>
