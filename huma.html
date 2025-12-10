@@ -1277,18 +1277,25 @@
         </div>
     </div>
 
-    <!-- idb Library -->
+    <!-- idb Library + IndexedDB Manager -->
     <script type="module">
         import { openDB } from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
         window.openDB = openDB;
         console.log('✅ idb library yüklendi');
+        
+        // IndexedDB Manager'ı dinamik olarak yükle
+        const script = document.createElement('script');
+        script.src = 'indexeddb-manager.js';
+        script.onload = () => {
+            console.log('✅ IndexedDB Manager yüklendi');
+            
+            // Ana uygulamayı başlat
+            const mainScript = document.createElement('script');
+            mainScript.src = 'huma.js';
+            document.head.appendChild(mainScript);
+        };
+        document.head.appendChild(script);
     </script>
-    
-    <!-- IndexedDB Manager -->
-    <script src="indexeddb-manager.js"></script>
-    
-    <!-- Main App -->
-    <script src="huma.js"></script>
     <script>
         // Debug: Sayfa yüklendikten sonra kontrol et
         window.addEventListener('load', function() {
