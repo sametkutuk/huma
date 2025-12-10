@@ -1182,6 +1182,47 @@
                     </div>
                 </div>
 
+                <!-- Veri Yönetimi (Accordion) -->
+                <div class="settings-accordion">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('data')">
+                        <div class="settings-accordion-title">
+                            <span class="settings-expand-icon">▶</span>
+                            <h3>💾 Veri Yönetimi</h3>
+                        </div>
+                    </div>
+                    <div class="settings-accordion-body" id="accordion-data">
+                        <div class="settings-accordion-content">
+                            <p class="settings-description">Verilerinizi yedekleyin ve geri yükleyin. Tarayıcı temizlendiğinde verileriniz silinebilir!</p>
+
+                            <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                                <h4 style="color: #856404; margin-bottom: 10px;">⚠️ Önemli Bilgi</h4>
+                                <p style="color: #856404; margin: 5px 0; font-size: 0.9em;">Ses kayıtlarınız ve özel ayarlarınız tarayıcınızda saklanır. Tarayıcı verilerini temizlerseniz silinebilir.</p>
+                                <p style="color: #856404; margin: 5px 0; font-size: 0.9em;"><strong>Düzenli olarak yedek alın!</strong></p>
+                            </div>
+
+                            <div class="action-buttons" style="gap: 10px; margin-bottom: 15px;">
+                                <button type="button" class="btn-add" onclick="exportData()" style="flex: 1;">
+                                    📥 Verileri İndir (Yedekle)
+                                </button>
+                                <button type="button" class="btn-add" onclick="importData()" style="flex: 1; background: #4ECDC4;">
+                                    📤 Verileri Yükle (Geri Yükle)
+                                </button>
+                            </div>
+
+                            <div class="action-buttons" style="gap: 10px;">
+                                <button type="button" class="btn-add" onclick="showStorageInfo()" style="flex: 1; background: #95a5a6;">
+                                    📊 Depolama Bilgisi
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 0.85em; color: #666;">
+                                <p><strong>💡 İpucu:</strong> Yedek dosyası tüm ses kayıtlarınızı, özel promptlarınızı ve ayarlarınızı içerir.</p>
+                                <p style="margin-top: 5px;">Yedek dosyasını güvenli bir yerde saklayın (Google Drive, Dropbox, vb.)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Hakkında (Accordion) -->
                 <div class="settings-accordion">
                     <div class="settings-accordion-header" onclick="toggleSettingsAccordion('about')">
@@ -1236,6 +1277,17 @@
         </div>
     </div>
 
+    <!-- idb Library -->
+    <script type="module">
+        import { openDB } from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
+        window.openDB = openDB;
+        console.log('✅ idb library yüklendi');
+    </script>
+    
+    <!-- IndexedDB Manager -->
+    <script src="indexeddb-manager.js"></script>
+    
+    <!-- Main App -->
     <script src="huma.js"></script>
     <script>
         // Debug: Sayfa yüklendikten sonra kontrol et
