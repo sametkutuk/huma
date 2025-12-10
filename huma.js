@@ -482,7 +482,7 @@ async function init() {
 
 function loadVoices() {
     // Storage henüz hazır değilse bekle
-    if (!storage) {
+    if (!storage || typeof storage.get !== 'function') {
         console.log('⏳ Storage henüz hazır değil, voices yüklemesi erteleniyor...');
         return;
     }
@@ -1614,6 +1614,11 @@ function checkBackupReminder() {
 // ═══════════════════════════════════════════════════════════════════
 
 async function exportData() {
+    if (!window.indexedDB) {
+        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
+        return;
+    }
+    
     try {
         const data = await window.indexedDB.exportAllData();
         
@@ -1648,6 +1653,11 @@ async function exportData() {
 }
 
 async function importData() {
+    if (!window.indexedDB) {
+        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
+        return;
+    }
+    
     try {
         // Dosya seçici oluştur
         const input = document.createElement('input');
@@ -1691,6 +1701,11 @@ async function importData() {
 }
 
 async function showStorageInfo() {
+    if (!window.indexedDB) {
+        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
+        return;
+    }
+    
     const info = await window.indexedDB.getStorageSize();
     
     if (info) {
