@@ -807,7 +807,8 @@ class VoiceCloningSystem {
             }
             
             this.mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
-            this.mediaRecorder.stream = stream; // Stream referansını sakla
+            // Stream referansını ayrı bir property'de sakla (MediaRecorder.stream readonly)
+            this.currentStream = stream;
             this.audioChunks = [];
             this.currentRecordingLetter = letter;
             this.isRecording = true;
@@ -829,7 +830,10 @@ class VoiceCloningSystem {
                 }
                 
                 // Stream'i temizle
-                stream.getTracks().forEach(track => track.stop());
+                if (this.currentStream) {
+                    this.currentStream.getTracks().forEach(track => track.stop());
+                    this.currentStream = null;
+                }
                 this.isRecording = false;
                 this.mediaRecorder = null;
             };
@@ -837,7 +841,10 @@ class VoiceCloningSystem {
             this.mediaRecorder.onerror = (event) => {
                 console.error('❌ MediaRecorder hatası:', event.error);
                 this.isRecording = false;
-                stream.getTracks().forEach(track => track.stop());
+                if (this.currentStream) {
+                    this.currentStream.getTracks().forEach(track => track.stop());
+                    this.currentStream = null;
+                }
                 throw new Error('Kayıt sırasında hata oluştu: ' + event.error);
             };
             
@@ -870,6 +877,12 @@ class VoiceCloningSystem {
     stopRecording() {
         if (this.mediaRecorder && this.isRecording) {
             this.mediaRecorder.stop();
+        }
+        
+        // Stream'i manuel olarak temizle (eğer hala varsa)
+        if (this.currentStream) {
+            this.currentStream.getTracks().forEach(track => track.stop());
+            this.currentStream = null;
         }
     }
     
@@ -2719,6 +2732,23 @@ let currentRecordingLetter = null;
 function init() {
     console.log('🎨 HUMA Ses Klonlama sistemi başlatılıyor...');
     
+    // Mobil Safari uyumluluk kontrolü
+    const isMobileSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isMobileSafari) {
+        console.log('📱 Mobil Safari tespit edildi, uyumluluk modu etkin');
+        
+        // Mobil Safari için özel ayarlar
+        try {
+            // Readonly property hatalarını önle
+            Object.defineProperty(window, 'voiceCloningSystem', {
+                writable: true,
+                configurable: true
+            });
+        } catch (e) {
+            // Ignore if already defined
+        }
+    }
+    
     // Show loading state
     document.body.classList.add('loading');
     
@@ -4278,13 +4308,13 @@ function startVoiceRecording() {
 let audioLevelMonitor = null;
 
 function startAudioLevelMonitoring() {
-    if (!voiceCloningSystem.mediaRecorder || !voiceCloningSystem.mediaRecorder.stream) {
+    if (!voiceCloningSystem.mediaRecorder || !voiceCloningSystem.currentStream) {
         return;
     }
 
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContext.createMediaStreamSource(voiceCloningSystem.mediaRecorder.stream);
+        const source = audioContext.createMediaStreamSource(voiceCloningSystem.currentStream);
         const analyser = audioContext.createAnalyser();
         
         analyser.fftSize = 256;
@@ -5599,10 +5629,39 @@ document.getElementById('settingsModal').onclick = function(e) {
 };
 
 // ═══════════════════════════════════════════════════════════════════
-// INITIALIZE ON LOAD
+// INITIALIZE ON LOAD - Mobil Safari uyumluluğu
 // ═══════════════════════════════════════════════════════════════════
 
-window.onload = init;
+// Mobil Safari'de window.onload readonly property hatası verebilir
+// addEventListener kullanarak güvenli başlatma
+(function() {
+    'use strict';
+    
+    function safeInit() {
+        try {
+            init();
+        } catch (error) {
+            console.error('❌ Uygulama başlatma hatası:', error);
+            // Fallback: Temel fonksiyonları yükle
+            setTimeout(function() {
+                try {
+                    if (typeof renderLetterGrid === 'function') {
+                        renderLetterGrid();
+                    }
+                } catch (fallbackError) {
+                    console.error('❌ Fallback başlatma hatası:', fallbackError);
+                }
+            }, 1000);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', safeInit);
+    } else {
+        // Sayfa zaten yüklenmişse hemen çalıştır
+        setTimeout(safeInit, 0);
+    }
+})();
 
 // ═══════════════════════════════════════════════════════════════════
 // KEYBOARD SUPPORT
