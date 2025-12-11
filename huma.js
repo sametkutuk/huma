@@ -5,9 +5,9 @@
 // Son Güncelleme: 2024-12-11
 // ═══════════════════════════════════════════════════════════════════
 
-const HUMA_VERSION = '4.1.0';
+const HUMA_VERSION = '4.2.0';
 const HUMA_BUILD_DATE = '2024-12-11';
-const HUMA_FEATURES = ['Ses Klonlama', 'Debug Sistemi', 'Kayıt Rehberi'];
+const HUMA_FEATURES = ['Ses Klonlama', 'Debug Sistemi', 'Kayıt Rehberi', 'Motor Test Kontrolleri'];
 
 // Türkçe Alfabe - 29 harf
 const TURKISH_LETTERS = [
@@ -488,12 +488,12 @@ class AudioManager {
         return this.isPlayingFlag;
     }
     
-    // Ses klonlama ile seamless entegrasyon
+    // Ses klonlama ile seamless entegrasyon - Test kontrolleri ile
     async speakWithVoiceCloning(text, forceVoiceCloning = false) {
-        // Öncelik sırası: 1) Ses klonlama (eğer etkin), 2) Google TTS, 3) Browser TTS
+        console.log('🎛️ Test Kontrolleri:', ENGINE_CONTROLS);
         
-        // Ses klonlama kontrolü
-        if ((forceVoiceCloning || (window.voiceCloningSystem && voiceCloningSystem.isEnabled()))) {
+        // 1) Ses klonlama kontrolü (eğer test kontrolünde etkin)
+        if (ENGINE_CONTROLS.voiceCloning && (forceVoiceCloning || (window.voiceCloningSystem && voiceCloningSystem.isEnabled()))) {
             try {
                 const clonedAudio = await voiceCloningSystem.synthesize(text);
                 if (clonedAudio) {
@@ -503,26 +503,39 @@ class AudioManager {
             } catch (error) {
                 console.warn('⚠️ Ses klonlama hatası, fallback kullanılacak:', error);
             }
+        } else if (!ENGINE_CONTROLS.voiceCloning) {
+            console.log('🚫 Ses klonlama test kontrolü ile devre dışı bırakıldı');
         }
         
-        // Google TTS fallback
-        if (this.apiKey) {
+        // 2) Google TTS fallback (eğer test kontrolünde etkin)
+        if (ENGINE_CONTROLS.googleTTS && this.apiKey) {
             try {
                 const result = await this.speak(text);
+                console.log('🌐 Google TTS kullanıldı');
                 return { success: result === true, source: 'google-tts' };
             } catch (error) {
                 console.warn('⚠️ Google TTS hatası, browser TTS kullanılacak:', error);
             }
+        } else if (!ENGINE_CONTROLS.googleTTS) {
+            console.log('🚫 Google TTS test kontrolü ile devre dışı bırakıldı');
         }
         
-        // Browser TTS fallback
-        try {
-            const result = await this.speakWithBrowser(text);
-            return { success: result === true, source: 'browser-tts' };
-        } catch (error) {
-            console.error('❌ Tüm TTS seçenekleri başarısız:', error);
-            return { success: false, source: 'none', error: error.message };
+        // 3) Browser TTS fallback (eğer test kontrolünde etkin)
+        if (ENGINE_CONTROLS.browserTTS) {
+            try {
+                const result = await this.speakWithBrowser(text);
+                console.log('🔊 Tarayıcı TTS kullanıldı');
+                return { success: result === true, source: 'browser-tts' };
+            } catch (error) {
+                console.error('❌ Tarayıcı TTS hatası:', error);
+            }
+        } else {
+            console.log('🚫 Tarayıcı TTS test kontrolü ile devre dışı bırakıldı');
         }
+        
+        // Hiçbir motor kullanılamadı
+        console.error('❌ Tüm ses motorları devre dışı veya başarısız!');
+        return { success: false, source: 'none', error: 'Tüm ses motorları devre dışı' };
     }
     
     // Ses klonlama durumu değişikliği bildirimi
@@ -3034,6 +3047,9 @@ function loadVoiceCloningSettings() {
         toggle.checked = enabled;
     }
     
+    // Motor kontrollerini yükle
+    loadEngineControls();
+    
     updateVoiceProfileStatus();
     loadVoiceParameters();
 }
@@ -4277,6 +4293,56 @@ function toggleVoiceCloning() {
     
     // Kullanıcıya bilgi ver
     showVoiceCloningStatusMessage(enabled);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SES MOTORU TEST KONTROLLERİ
+// ═══════════════════════════════════════════════════════════════════
+
+// Ses motoru test kontrolleri
+const ENGINE_CONTROLS = {
+    voiceCloning: true,
+    googleTTS: true,
+    browserTTS: true
+};
+
+function toggleEngineControl(engine) {
+    const checkbox = document.getElementById(`enable${engine.charAt(0).toUpperCase() + engine.slice(1)}`);
+    ENGINE_CONTROLS[engine] = checkbox.checked;
+    
+    // En az bir motor aktif olmalı
+    const activeEngines = Object.values(ENGINE_CONTROLS).filter(Boolean).length;
+    if (activeEngines === 0) {
+        checkbox.checked = true;
+        ENGINE_CONTROLS[engine] = true;
+        alert('⚠️ En az bir ses motoru aktif olmalı!');
+        return;
+    }
+    
+    console.log(`🔧 ${engine} motoru: ${checkbox.checked ? 'Etkin' : 'Devre Dışı'}`);
+    console.log('🎛️ Aktif motorlar:', Object.entries(ENGINE_CONTROLS)
+        .filter(([key, value]) => value)
+        .map(([key]) => key)
+        .join(', '));
+    
+    // Ayarları kaydet
+    storage.set(`engine_${engine}_enabled`, checkbox.checked.toString());
+}
+
+function loadEngineControls() {
+    // Kaydedilmiş ayarları yükle
+    ENGINE_CONTROLS.voiceCloning = storage.get('engine_voiceCloning_enabled', 'true') === 'true';
+    ENGINE_CONTROLS.googleTTS = storage.get('engine_googleTTS_enabled', 'true') === 'true';
+    ENGINE_CONTROLS.browserTTS = storage.get('engine_browserTTS_enabled', 'true') === 'true';
+    
+    // UI'ı güncelle
+    const vcCheckbox = document.getElementById('enableVoiceCloning');
+    const gtCheckbox = document.getElementById('enableGoogleTTS');
+    const btCheckbox = document.getElementById('enableBrowserTTS');
+    
+    if (vcCheckbox) vcCheckbox.checked = ENGINE_CONTROLS.voiceCloning;
+    if (gtCheckbox) gtCheckbox.checked = ENGINE_CONTROLS.googleTTS;
+    if (btCheckbox) btCheckbox.checked = ENGINE_CONTROLS.browserTTS;
 }
 
 function updateVoiceCloningUI(enabled) {

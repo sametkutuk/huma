@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 HUMA ile Öğreniyorum v4.1.0</title>
-    <meta name="version" content="4.1.0">
+    <title>🎨 HUMA ile Öğreniyorum v4.2.0</title>
+    <meta name="version" content="4.2.0">
     <meta name="build-date" content="2024-12-11">
     <meta name="description" content="HUMA Türkçe Alfabe Öğrenme Uygulaması - Ses Klonlama Sistemi">
     <style>
@@ -1485,7 +1485,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.1.0</span></h1>
+            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.2.0</span></h1>
         </div>
         <div class="letter-grid" id="letterGrid"></div>
     </div>
@@ -1602,6 +1602,34 @@
                                     <p>• Sesinizin örneklerini kaydedin</p>
                                     <p>• Sistem sesinizi analiz eder</p>
                                     <p>• Tüm metinler sizin sesinizle okunur</p>
+                                </div>
+                            </div>
+
+                            <!-- Ses Motoru Test Kontrolleri -->
+                            <div class="settings-subsection">
+                                <h4>🔧 Ses Motoru Test Kontrolleri</h4>
+                                <p class="settings-description">Test için ses motorlarını ayrı ayrı açıp kapatabilirsiniz.</p>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="enableVoiceCloning" checked onchange="toggleEngineControl('voiceCloning')">
+                                    <label for="enableVoiceCloning">🎤 Ses Klonlama Motoru</label>
+                                </div>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="enableGoogleTTS" checked onchange="toggleEngineControl('googleTTS')">
+                                    <label for="enableGoogleTTS">🌐 Google TTS Motoru</label>
+                                </div>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="enableBrowserTTS" checked onchange="toggleEngineControl('browserTTS')">
+                                    <label for="enableBrowserTTS">🔊 Tarayıcı TTS Motoru</label>
+                                </div>
+                                
+                                <div class="info-box" style="background: #fff3cd; border-color: #ffeaa7;">
+                                    <p>⚠️ <strong>Test Modu:</strong></p>
+                                    <p>• Sadece işaretli motorlar kullanılacak</p>
+                                    <p>• En az bir motor aktif olmalı</p>
+                                    <p>• Öncelik sırası: Klonlama → Google → Tarayıcı</p>
                                 </div>
                             </div>
 
@@ -1989,7 +2017,7 @@
                             <div style="text-align: center; color: #999; font-size: 0.9em; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                                 <p>Çocuklar için eğlenceli öğrenme deneyimi 💝</p>
                                 <p style="margin-top: 10px; font-size: 0.85em;">
-                                    <strong>HUMA v4.1.0</strong> - Ses Klonlama Sistemi<br>
+                                    <strong>HUMA v4.2.0</strong> - Ses Klonlama + Test Kontrolleri<br>
                                     <span style="font-size: 0.8em;">Son Güncelleme: 11 Aralık 2024</span>
                                 </p>
                             </div>
