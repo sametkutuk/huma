@@ -1,7 +1,13 @@
 // ═══════════════════════════════════════════════════════════════════
 // HUMA - Türkçe Alfabe Öğrenme Uygulaması
-// Birleştirilmiş ve Optimize Edilmiş Versiyon
+// Ses Klonlama Sistemi ile Birleştirilmiş Versiyon
+// Versiyon: 4.1.0 - Debug Sistemi
+// Son Güncelleme: 2024-12-11
 // ═══════════════════════════════════════════════════════════════════
+
+const HUMA_VERSION = '4.1.0';
+const HUMA_BUILD_DATE = '2024-12-11';
+const HUMA_FEATURES = ['Ses Klonlama', 'Debug Sistemi', 'Kayıt Rehberi'];
 
 // Türkçe Alfabe - 29 harf
 const TURKISH_LETTERS = [
@@ -2731,7 +2737,8 @@ let currentRecordingLetter = null;
 // ═══════════════════════════════════════════════════════════════════
 
 function init() {
-    console.log('🎨 HUMA Ses Klonlama sistemi başlatılıyor...');
+    console.log(`🎨 HUMA v${HUMA_VERSION} - Ses Klonlama sistemi başlatılıyor...`);
+    console.log(`📅 Build: ${HUMA_BUILD_DATE} | Özellikler: ${HUMA_FEATURES.join(', ')}`);
     
     // Mobil Safari uyumluluk kontrolü
     const isMobileSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -3507,6 +3514,33 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById('settingsModal').classList.remove('active');
+}
+
+function showVersionInfo() {
+    const versionInfo = `
+🎨 HUMA - Türkçe Alfabe Öğrenme Uygulaması
+
+📋 VERSİYON BİLGİSİ:
+• Versiyon: ${HUMA_VERSION}
+• Build Tarihi: ${HUMA_BUILD_DATE}
+• Özellikler: ${HUMA_FEATURES.join(', ')}
+
+🆕 YENİ ÖZELLİKLER (v4.1.0):
+• 🎤 Ses Klonlama Sistemi
+• 🔍 Debug ve Durum Kontrol
+• 📖 Kayıt Rehberi
+• 🛠️ Gelişmiş Hata Yönetimi
+• 📱 Mobil Safari Uyumluluğu
+
+🔧 TEKNİK BİLGİLER:
+• Tarayıcı: ${navigator.userAgent.split(' ')[0]}
+• Platform: ${navigator.platform}
+• Dil: ${navigator.language}
+
+💡 GitHub Pages'te yeni versiyon yayınlandığında bu bilgiler güncellenecek.
+    `;
+    
+    alert(versionInfo);
 }
 
 function checkVoiceCloningStatus() {
