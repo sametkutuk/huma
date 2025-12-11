@@ -807,8 +807,9 @@ class VoiceCloningSystem {
             }
             
             this.mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
-            // Stream referansını ayrı bir property'de sakla (MediaRecorder.stream readonly)
+            // FIXED: MediaRecorder.stream is readonly - using separate property instead
             this.currentStream = stream;
+            console.log('✅ MediaRecorder created successfully, stream stored in currentStream');
             this.audioChunks = [];
             this.currentRecordingLetter = letter;
             this.isRecording = true;
@@ -3506,6 +3507,100 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById('settingsModal').classList.remove('active');
+}
+
+function checkVoiceCloningStatus() {
+    if (!voiceCloningSystem) {
+        alert('❌ Ses klonlama sistemi yüklenmemiş!');
+        return;
+    }
+    
+    const status = voiceCloningSystem.getStatus();
+    const profile = voiceCloningSystem.profileManager.getProfile();
+    
+    let statusText = `🔍 Ses Klonlama Durum Raporu\n\n`;
+    statusText += `✅ Sistem Yüklü: ${voiceCloningSystem ? 'Evet' : 'Hayır'}\n`;
+    statusText += `🎤 Etkin Durum: ${status.enabled ? 'Etkin' : 'Devre Dışı'}\n`;
+    statusText += `📁 Profil Var: ${status.hasProfile ? 'Evet' : 'Hayır'}\n`;
+    statusText += `🎵 Ses Örneği: ${status.sampleCount} adet\n`;
+    statusText += `⭐ Kalite: ${Math.round(status.profileQuality)}%\n`;
+    statusText += `💾 Cache: ${status.cacheSize} öğe\n\n`;
+    
+    if (!status.enabled) {
+        statusText += `⚠️ SORUN: Ses klonlama devre dışı!\n`;
+        statusText += `🔧 ÇÖZÜM: Ayarlar > Ses Klonlamayı Etkinleştir\n\n`;
+    }
+    
+    if (!status.hasProfile) {
+        statusText += `⚠️ SORUN: Ses profili yok!\n`;
+        statusText += `🔧 ÇÖZÜM: Ses Kaydı Yap düğmesine tıklayın\n\n`;
+    }
+    
+    if (status.sampleCount < 5) {
+        statusText += `⚠️ UYARI: Az ses örneği (${status.sampleCount})\n`;
+        statusText += `🔧 ÖNERİ: En az 5-10 örnek kaydedin\n\n`;
+    }
+    
+    if (status.enabled && status.hasProfile) {
+        statusText += `✅ SES KLONLAMA HAZIR!\n`;
+        statusText += `🎯 Harflere tıkladığınızda sizin sesiniz çalacak`;
+    }
+    
+    alert(statusText);
+}
+
+function showRecordingGuide() {
+    const guideContent = `
+📖 Ses Klonlama Kayıt Rehberi
+
+🎯 AMAÇ:
+Sesinizi klonlamak için kaliteli ses örnekleri kaydetmek
+
+🎤 KAYIT İPUÇLARI:
+
+1️⃣ ORTAM HAZIRLIĞI:
+• Sessiz bir ortam seçin
+• Arka plan gürültüsünü minimize edin
+• Mikrofonu ağzınıza 15-20 cm uzaklıkta tutun
+
+2️⃣ SES KALİTESİ:
+• Normal konuşma hızında okuyun
+• Net ve anlaşılır telaffuz yapın
+• Çok yavaş veya çok hızlı konuşmayın
+• Doğal ses tonunuzu kullanın
+
+3️⃣ KAYIT SÜRECİ:
+• Her harf/kelime için 2-3 saniye kayıt yapın
+• Kayıt başlamadan önce 1 saniye bekleyin
+• Kayıt bittikten sonra 1 saniye daha bekleyin
+• Hata yaparsanız kaydı tekrarlayın
+
+4️⃣ ÖRNEK METİNLER:
+• Verilen metinleri tam olarak okuyun
+• Noktalama işaretlerine dikkat edin
+• Vurguları doğal yapın
+
+5️⃣ KALİTE KONTROL:
+• Sistem size kalite puanı verecek
+• %70'in üzerinde puan almaya çalışın
+• Düşük puanlı kayıtları tekrarlayın
+
+✅ İYİ KAYIT ÖRNEĞİ:
+"A harfi Annenin A'sı" - Net, sakin, doğal
+
+❌ KÖTÜ KAYIT ÖRNEKLERİ:
+• Çok hızlı: "AharfiAnneninAsi"
+• Çok yavaş: "A... harfi... Annenin... A'sı"
+• Gürültülü: Arka planda müzik/konuşma
+
+🔄 TEKRAR KAYIT:
+Memnun kalmazsanız istediğiniz kadar tekrar kayıt yapabilirsiniz.
+
+💡 İPUCU:
+En az 10-15 farklı ses örneği kaydetmeniz önerilir.
+    `;
+    
+    alert(guideContent);
 }
 
 function changeTheme() {
