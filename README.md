@@ -1,6 +1,6 @@
 # 🎨 HUMA - Türkçe Alfabe Öğrenme Uygulaması
 
-Çocuklar için eğlenceli ve etkileşimli Türkçe alfabe öğrenme uygulaması.
+Çocuklar için eğlenceli ve etkileşimli Türkçe alfabe öğrenme uygulaması. **Ses klonlama özelliği ile çocuklar kendi seslerini duyarak öğrenebilir!**
 
 ## 🌐 Demo
 
@@ -15,6 +15,10 @@
 - **Sayılar (0-9)**: Sayıları öğrenme (Sıfır, Bir, İki, vb.)
 
 ### 🎤 Ses Özellikleri
+- **🎭 Ses Klonlama**: Kendi sesinizi klonlayarak tüm metinleri kendi sesinizle dinleyin!
+- **📊 Kalite Analizi**: Otomatik ses kalitesi değerlendirmesi ve iyileştirme önerileri
+- **🎤 Ses Örnekleri Yönetimi**: Birden fazla ses örneği kaydedip yönetin
+- **⚡ Akıllı Cache**: Klonlanan sesler cache'lenir, hızlı erişim
 - **Google Cloud TTS**: Yüksek kaliteli Türkçe ses sentezi
 - **Tarayıcı TTS**: Ücretsiz tarayıcı tabanlı ses
 - **Ses Kaydetme**: Kendi sesinizi kaydedip kullanabilirsiniz
@@ -34,7 +38,17 @@
 ### 💰 Maliyet Kontrolü
 - **Kullanım Limiti**: API kullanımını sınırlayabilirsiniz
 - **Ses Cache**: Üretilen sesler kaydedilir, tekrar API kullanmaz
+- **Ses Klonlama Cache**: Klonlanan sesler cache'lenir, performans artışı
 - **Ücretsiz Kota**: Google Cloud'da ayda 1 milyon karakter ücretsiz
+
+### 🎤 Ses Klonlama Özellikleri
+- **🎙️ Kolay Kayıt**: Tek tıkla ses kaydı başlatma
+- **📊 Kalite Kontrolü**: Otomatik ses kalitesi analizi ve öneriler
+- **🔧 Parametre Ayarlama**: Pitch, hız, volume özelleştirme
+- **🎯 Gerçek Zamanlı Önizleme**: Ayarları anında test etme
+- **💾 Otomatik Yedekleme**: Ses profilleri otomatik yedeklenir
+- **🔄 Tema Uyumluluğu**: Tüm temalarla sorunsuz çalışma
+- **⚡ Seamless Geçiş**: Normal TTS ile otomatik geçiş
 
 ## 🚀 Kullanım
 
@@ -54,12 +68,20 @@
 
 ### Teknolojiler
 - Vanilla JavaScript (ES6+)
+- **Web Audio API** (ses analizi ve işleme)
+- **MediaRecorder API** (ses kaydetme)
+- **SpeechSynthesis API** (ses klonlama)
 - Google Cloud Text-to-Speech API
 - Web Speech API (tarayıcı TTS)
-- MediaRecorder API (ses kaydetme)
 - LocalStorage (veri saklama)
+- **Property-Based Testing** (21 test ile kapsamlı doğrulama)
 
 ### Özellikler
+- ✅ **Ses Klonlama Sistemi** (kendi sesinizi kullanın)
+- ✅ **Akıllı Hata Yönetimi** (kullanıcı dostu bildirimler)
+- ✅ **Progress Indicator'lar** (işlem durumu takibi)
+- ✅ **Kalite Geri Bildirimi** (ses kalitesi analizi)
+- ✅ **Kapsamlı Backup/Restore** (ses profilleri dahil)
 - ✅ Responsive tasarım (mobil uyumlu)
 - ✅ Offline çalışma (cache ile)
 - ✅ Tema sistemi
@@ -67,10 +89,23 @@
 - ✅ API kullanım limiti
 - ✅ Merkezi localStorage yönetimi
 - ✅ Optimize edilmiş emoji eşleştirme
+- ✅ **Accessibility desteği** (erişilebilirlik)
 
 ## 📝 Değişiklik Notları
 
-### v3.1 (Son Sürüm)
+### v4.0 (Son Sürüm) - Ses Klonlama Özelliği 🎤
+- ✅ **🎭 Ses Klonlama Sistemi**: Kendi sesinizi klonlayarak tüm metinleri kendi sesinizle dinleyin
+- ✅ **📊 Kalite Analizi**: Otomatik ses kalitesi değerlendirmesi ve iyileştirme önerileri
+- ✅ **🎤 Ses Örnekleri Yönetimi**: Birden fazla ses örneği kaydedip yönetin
+- ✅ **⚡ Akıllı Cache**: Klonlanan sesler cache'lenir, performans artışı
+- ✅ **🚨 Gelişmiş Hata Yönetimi**: Kullanıcı dostu bildirimler ve progress indicator'lar
+- ✅ **💾 Kapsamlı Backup/Restore**: Ses profilleri ve cache verileri dahil yedekleme
+- ✅ **🔄 Seamless Entegrasyon**: Normal TTS ile otomatik geçiş
+- ✅ **🎯 Tema Uyumluluğu**: Tüm temalarla sorunsuz çalışma
+- ✅ **♿ Accessibility**: Erişilebilirlik standartlarına uygun tasarım
+- ✅ **🧪 Property-Based Testing**: 21 test ile kapsamlı doğrulama
+
+### v3.1
 - ✅ **Basitleştirilmiş Gizli Erişim**: HUMA başlığına 5 kere tıklama (tüm cihazlarda)
 - ✅ **Direkt Uygulama Açılışı**: Landing page kaldırıldı
 - ✅ **Hakkında Bölümü**: Ayarlar içinde bilgi ve özellikler
@@ -94,8 +129,18 @@
 
 ## 🎓 Eğitim İpuçları
 
+### 🎤 Ses Klonlama İpuçları
+- **Sessiz ortamda kayıt yapın** - En iyi kalite için
+- **Mikrofona 15-20 cm mesafeden konuşun**
+- **En az 3-5 farklı ses örneği kaydedin**
+- **Her örnek 10-30 saniye arası olsun**
+- **Normal konuşma hızınızı kullanın**
+- **Farklı tonlarda konuşarak çeşitlilik sağlayın**
+
+### 📚 Genel Kullanım İpuçları
 - Çocuklar için **yavaş hız** (0.5-0.8) ve **yüksek ton** (1.3+) önerilir
 - Her harf için **kendi sesinizi kaydedebilirsiniz**
+- **Ses klonlama** ile tüm metinler kendi sesinizle okunur
 - Her harf için **birden fazla prompt ekleyebilirsiniz** (➕ Prompt Ekle butonu)
 - **Checkbox** ile hangi promptların döngüde çalacağını seçin
 - Her prompt'u **ayrı ayrı silebilirsiniz** (🗑️ butonu)
@@ -103,6 +148,7 @@
 - **Klavyeden** harflere basarak da sesleri çalabilirsiniz
 - **Gizli ayarlara erişim:** HUMA başlığına **5 kere hızlıca** tıklayın
 - Ayarlar açıkken klavye sesleri çalmaz (yazı yazabilirsiniz)
+- **Düzenli yedek alın** - Ses profilleri dahil tüm verilerinizi koruyun
 
 ## 📄 Lisans
 

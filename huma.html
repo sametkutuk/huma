@@ -797,6 +797,61 @@
             display: block;
         }
 
+        #voiceCloningRecordingSection {
+            display: none;
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        #voiceCloningRecordingSection.active {
+            display: block;
+        }
+
+        #recordingProgress {
+            margin: 15px 0;
+        }
+
+        #recordingTimer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 5px 0;
+        }
+
+        .parameter-preview {
+            background: #f0f8ff;
+            border: 1px solid #4ECDC4;
+            border-radius: 6px;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 0.85em;
+            color: #2196f3;
+        }
+
+        .parameter-preview.active {
+            background: #e8f5e8;
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+
+        #voiceParametersSection {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            background: #fafafa;
+        }
+
+        #advancedVoiceParams {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
         .stop-recording-btn {
             background: #dc3545;
             color: white;
@@ -836,6 +891,254 @@
             width: 100%;
         }
 
+        /* Voice Samples Management */
+        .voice-samples-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .voice-sample-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .voice-sample-item:hover {
+            border-color: #4ECDC4;
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.15);
+        }
+
+        .voice-sample-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .voice-sample-title {
+            font-weight: 600;
+            color: #2C3E50;
+            font-size: 1rem;
+        }
+
+        .voice-sample-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .voice-sample-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .voice-sample-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .voice-sample-btn:hover {
+            background: #45b8b0;
+            transform: translateY(-1px);
+        }
+
+        .voice-sample-btn.danger {
+            background: #ff6b6b;
+        }
+
+        .voice-sample-btn.danger:hover {
+            background: #ff5252;
+        }
+
+        .voice-sample-btn.secondary {
+            background: #6c757d;
+        }
+
+        .voice-sample-btn.secondary:hover {
+            background: #5a6268;
+        }
+
+        .voice-sample-quality {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        .quality-bar {
+            width: 60px;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quality-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .quality-excellent { background: #4caf50; }
+        .quality-good { background: #8bc34a; }
+        .quality-fair { background: #ffc107; }
+        .quality-poor { background: #ff9800; }
+        .quality-bad { background: #f44336; }
+
+        .no-samples-message {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Recording Guide Styles */
+        .recommended-texts {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .recommended-text-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recommended-text-item:hover {
+            border-color: #4ECDC4;
+            background: #f0f8ff;
+        }
+
+        .recommended-text-item.selected {
+            border-color: #4ECDC4;
+            background: #e8f5e8;
+        }
+
+        .recommended-text-item.recorded {
+            border-color: #4caf50;
+            background: #e8f5e8;
+            opacity: 0.8;
+        }
+
+        .text-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .text-item-title {
+            font-weight: 600;
+            color: #2C3E50;
+            font-size: 0.9rem;
+        }
+
+        .text-item-status {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-recording {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .text-item-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #555;
+            font-style: italic;
+        }
+
+        .text-item-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .text-item-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .text-item-btn:hover {
+            background: #45b8b0;
+        }
+
+        .text-item-btn.secondary {
+            background: #6c757d;
+        }
+
+        .text-item-btn.secondary:hover {
+            background: #5a6268;
+        }
+
+        .guided-recording-progress {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: #4ECDC4;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
         /* Animations */
         @keyframes bounce {
             0%, 100% { transform: translateY(0) scale(1); }
@@ -846,6 +1149,197 @@
 
         .animate-bounce {
             animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Error Notification Animations */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            to { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Notification Styles */
+        .error-notification-content {
+            font-size: 0.9rem;
+        }
+
+        .error-notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .error-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .error-title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .error-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .error-close:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .error-context {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* Progress Indicator Styles */
+        .progress-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e0e0e0;
+            border-top: 3px solid #4ECDC4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px auto;
+        }
+
+        .progress-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-message {
+            font-weight: 500;
+            color: #2C3E50;
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #4ECDC4;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Smooth transitions */
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Success states */
+        .success-state {
+            background: #e8f5e8 !important;
+            border-color: #4caf50 !important;
+            color: #2e7d32 !important;
+        }
+
+        /* Error states */
+        .error-state {
+            background: #ffebee !important;
+            border-color: #f44336 !important;
+            color: #c62828 !important;
+        }
+
+        /* Pulse animation for active elements */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Improved focus styles */
+        button:focus,
+        input:focus,
+        select:focus {
+            outline: 2px solid #4ECDC4;
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .letter-card {
+                border-width: 3px;
+            }
+            
+            .error-notification-content {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* Responsive */
@@ -1080,6 +1574,210 @@
                     </div>
                 </div>
 
+                <!-- Ses Klonlama (Accordion) -->
+                <div class="settings-accordion">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('voicecloning')">
+                        <div class="settings-accordion-title">
+                            <span class="settings-expand-icon">▶</span>
+                            <h3>🎤 Ses Klonlama</h3>
+                        </div>
+                    </div>
+                    <div class="settings-accordion-body" id="accordion-voicecloning">
+                        <div class="settings-accordion-content">
+                            <!-- Ses Klonlama Durumu -->
+                            <div class="settings-subsection">
+                                <h4>Ses Klonlama Durumu</h4>
+                                <p class="settings-description">Kendi sesinizi klonlayarak metinleri kişisel sesinizle dinleyin.</p>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="voiceCloningEnabled" onchange="toggleVoiceCloning()">
+                                    <label for="voiceCloningEnabled">🎤 Ses Klonlamayı Etkinleştir</label>
+                                </div>
+                                
+                                <div class="info-box">
+                                    <p>💡 <strong>Nasıl Çalışır:</strong></p>
+                                    <p>• Sesinizin örneklerini kaydedin</p>
+                                    <p>• Sistem sesinizi analiz eder</p>
+                                    <p>• Tüm metinler sizin sesinizle okunur</p>
+                                </div>
+                            </div>
+
+                            <!-- Ses Profili Durumu -->
+                            <div class="settings-subsection">
+                                <h4>Ses Profili</h4>
+                                <div id="voiceProfileStatus">
+                                    <p>Henüz ses profili oluşturulmamış.</p>
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" onclick="startVoiceRecording()" id="recordVoiceBtn">
+                                        🎙️ Ses Kaydı Yap
+                                    </button>
+                                    <button type="button" class="btn-add" onclick="showRecordingGuide()" id="recordingGuideBtn" style="background: #667eea;">
+                                        📖 Kayıt Rehberi
+                                    </button>
+                                    <button type="button" class="btn-clear" onclick="deleteVoiceProfile()" id="deleteProfileBtn" style="display: none;">
+                                        🗑️ Profili Sil
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Kayıt Rehberi -->
+                            <div class="settings-subsection" id="recordingGuideSection" style="display: none;">
+                                <h4>📖 Optimal Ses Klonlama Rehberi</h4>
+                                <p class="settings-description">En iyi ses klonlama kalitesi için bu cümleleri okuyun:</p>
+                                
+                                <div class="info-box">
+                                    <p><strong>💡 İpuçları:</strong></p>
+                                    <p>• Her cümleyi ayrı ayrı kaydedin (10-15 saniye)</p>
+                                    <p>• Sessiz ortamda, normal hızda okuyun</p>
+                                    <p>• Mikrofona 15-20 cm mesafeden konuşun</p>
+                                    <p>• En az 5 farklı cümle kaydetmeniz önerilir</p>
+                                </div>
+                                
+                                <div id="recommendedTexts" class="recommended-texts">
+                                    <!-- Dinamik olarak doldurulacak -->
+                                </div>
+                                
+                                <div class="action-buttons" style="margin-top: 15px;">
+                                    <button type="button" class="btn-add" onclick="startGuidedRecording()" id="guidedRecordingBtn">
+                                        🎯 Rehberli Kayıt Başlat
+                                    </button>
+                                    <button type="button" class="btn-clear" onclick="hideRecordingGuide()">
+                                        ❌ Rehberi Kapat
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Ses Örnekleri Yönetimi -->
+                            <div class="settings-subsection" id="voiceSamplesSection" style="display: none;">
+                                <h4>Ses Örnekleri</h4>
+                                <p class="settings-description">Kaydettiğiniz ses örneklerini yönetin ve test edin.</p>
+                                
+                                <div id="voiceSamplesList" class="voice-samples-list">
+                                    <!-- Ses örnekleri buraya dinamik olarak eklenecek -->
+                                </div>
+                                
+                                <div class="info-box" style="margin-top: 15px;">
+                                    <p>💡 <strong>İpuçları:</strong></p>
+                                    <p>• En az 3 farklı ses örneği kaydetmeniz önerilir</p>
+                                    <p>• Her örnek 5-15 saniye arasında olmalı</p>
+                                    <p>• Farklı tonlarda konuşarak çeşitlilik sağlayın</p>
+                                </div>
+                                
+                                <div class="action-buttons" style="margin-top: 15px;">
+                                    <button type="button" class="btn-add" onclick="addNewVoiceSample()">
+                                        ➕ Yeni Örnek Ekle
+                                    </button>
+                                    <button type="button" class="btn-clear" onclick="clearAllVoiceSamples()">
+                                        🗑️ Tümünü Temizle
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Ses Parametreleri -->
+                            <div class="settings-subsection" id="voiceParametersSection" style="display: none;">
+                                <h4>Ses Parametreleri</h4>
+                                <p class="settings-description">Klonlanan sesinizin özelliklerini ayarlayın.</p>
+                                
+                                <div class="form-group">
+                                    <label for="voiceClonePitch">Ses Tonu: <span id="voiceClonePitchValue">1.0</span></label>
+                                    <input type="range" class="range-input-full-width" id="voiceClonePitch" 
+                                           min="0.5" max="2.0" step="0.1" value="1.0"
+                                           oninput="updateVoiceCloneParameter('pitch', this.value)">
+                                    <small>🎵 Alçak (0.5) | 🎶 Normal (1.0) | 🎤 Yüksek (2.0)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="voiceCloneRate">Konuşma Hızı: <span id="voiceCloneRateValue">1.0</span></label>
+                                    <input type="range" class="range-input-full-width" id="voiceCloneRate" 
+                                           min="0.5" max="2.0" step="0.1" value="1.0"
+                                           oninput="updateVoiceCloneParameter('rate', this.value)">
+                                    <small>🐢 Yavaş (0.5) | 🚶 Normal (1.0) | 🏃 Hızlı (2.0)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="voiceCloneVolume">Ses Seviyesi: <span id="voiceCloneVolumeValue">1.0</span></label>
+                                    <input type="range" class="range-input-full-width" id="voiceCloneVolume" 
+                                           min="0.1" max="1.5" step="0.1" value="1.0"
+                                           oninput="updateVoiceCloneParameter('volume', this.value)">
+                                    <small>🔇 Sessiz (0.1) | 🔊 Normal (1.0) | 📢 Yüksek (1.5)</small>
+                                </div>
+                                
+                                <!-- Gelişmiş Parametreler -->
+                                <div class="checkbox-option" onclick="toggleAdvancedVoiceParams()">
+                                    <input type="checkbox" id="showAdvancedVoiceParams">
+                                    <label for="showAdvancedVoiceParams">🔧 Gelişmiş Ayarlar</label>
+                                </div>
+                                
+                                <div id="advancedVoiceParams" style="display: none; margin-top: 15px;">
+                                    <div class="form-group">
+                                        <label for="voiceCloneEmphasis">Vurgu: <span id="voiceCloneEmphasisValue">1.0</span></label>
+                                        <input type="range" class="range-input-full-width" id="voiceCloneEmphasis" 
+                                               min="0.5" max="2.0" step="0.1" value="1.0"
+                                               oninput="updateVoiceCloneParameter('emphasis', this.value)">
+                                        <small>Konuşmadaki vurgu seviyesi</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="voiceCloneBreathiness">Nefes Sesi: <span id="voiceCloneBreatheValue">0.5</span></label>
+                                        <input type="range" class="range-input-full-width" id="voiceCloneBreathiness" 
+                                               min="0.0" max="1.0" step="0.1" value="0.5"
+                                               oninput="updateVoiceCloneParameter('breathiness', this.value)">
+                                        <small>Sesteki nefes sesi miktarı</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="voiceCloneRoughness">Pürüzlülük: <span id="voiceCloneRoughnessValue">0.3</span></label>
+                                        <input type="range" class="range-input-full-width" id="voiceCloneRoughness" 
+                                               min="0.0" max="1.0" step="0.1" value="0.3"
+                                               oninput="updateVoiceCloneParameter('roughness', this.value)">
+                                        <small>Ses dokusundaki pürüzlülük</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Önizleme ve Sıfırlama -->
+                                <div class="action-buttons" style="margin-top: 15px;">
+                                    <button type="button" class="btn-add" onclick="previewVoiceClone()">
+                                        🔊 Önizleme
+                                    </button>
+                                    <button type="button" class="btn-clear" onclick="resetVoiceParameters()">
+                                        🔄 Varsayılan
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Kayıt Durumu -->
+                            <div class="recording-section" id="voiceCloningRecordingSection">
+                                <h4>🎤 Ses Kaydı Yapılıyor</h4>
+                                <p>Mikrofona net bir şekilde konuşun. Minimum 3 saniye, önerilen 10-30 saniye.</p>
+                                
+                                <div class="info-box" style="margin: 10px 0; font-size: 0.9em;">
+                                    <p><strong>💡 İpuçları:</strong></p>
+                                    <p>• Sessiz bir ortamda kayıt yapın</p>
+                                    <p>• Mikrofona 15-20 cm mesafeden konuşun</p>
+                                    <p>• Normal konuşma hızınızı kullanın</p>
+                                    <p>• Alfabe, sayılar veya kısa cümleler okuyun</p>
+                                </div>
+                                
+                                <div id="recordingProgress">
+                                    <div style="background: #f0f0f0; border-radius: 10px; height: 25px; margin: 15px 0; position: relative;">
+                                        <div id="recordingProgressBar" style="background: #4ECDC4; height: 100%; border-radius: 10px; width: 0%; transition: all 0.3s;"></div>
+                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.8em; font-weight: bold; color: #333;">
+                                            Ses Seviyesi
+                                        </div>
+                                    </div>
+                                    <p id="recordingTimer" style="text-align: center; font-size: 1.3em; font-weight: bold; margin: 10px 0;">00:00</p>
+                                </div>
+                                
+                                <div style="text-align: center;">
+                                    <button type="button" class="stop-recording-btn" onclick="stopVoiceRecording()">⏹️ Kaydı Durdur</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Ses Ayarları (Accordion) -->
                 <div class="settings-accordion">
                     <div class="settings-accordion-header" onclick="toggleSettingsAccordion('voice')">
@@ -1215,8 +1913,17 @@
                                 </button>
                             </div>
 
+                            <!-- Ses Klonlama Backup Bilgisi -->
+                            <div id="voiceCloningBackupInfo" style="display: none; margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                                <h4 style="color: #1976d2; margin-bottom: 10px;">🎤 Ses Klonlama Yedekleme</h4>
+                                <p style="color: #1976d2; margin: 5px 0; font-size: 0.9em;">Ses profiliniz ve örnekleriniz yedekleme dosyasına dahil edilecek.</p>
+                                <div id="voiceBackupDetails" style="margin-top: 10px; font-size: 0.85em; color: #1565c0;">
+                                    <!-- Dinamik olarak doldurulacak -->
+                                </div>
+                            </div>
+
                             <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 0.85em; color: #666;">
-                                <p><strong>💡 İpucu:</strong> Yedek dosyası tüm ses kayıtlarınızı, özel promptlarınızı ve ayarlarınızı içerir.</p>
+                                <p><strong>💡 İpucu:</strong> Yedek dosyası tüm ses kayıtlarınızı, özel promptlarınızı, ses klonlama profilinizi ve ayarlarınızı içerir.</p>
                                 <p style="margin-top: 5px;">Yedek dosyasını güvenli bir yerde saklayın (Google Drive, Dropbox, vb.)</p>
                             </div>
                         </div>
@@ -1279,6 +1986,8 @@
 
     <!-- Main App -->
     <script src="huma.js"></script>
+    <!-- Voice Cloning Tests -->
+    <script src="voice-cloning.test.js"></script>
     <script>
         // Debug: Sayfa yüklendikten sonra kontrol et
         window.addEventListener('load', function() {
@@ -1296,6 +2005,14 @@
                     }
                 }
             }, 500);
+            
+            // Ses klonlama testlerini çalıştır
+            setTimeout(function() {
+                if (typeof runVoiceCloningTests === 'function') {
+                    console.log('\n🧪 Voice Cloning Tests başlatılıyor...');
+                    runVoiceCloningTests();
+                }
+            }, 1000);
         });
     </script>
 </body>
