@@ -451,22 +451,8 @@ let currentRecordingLetter = null;
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════
 
-async function init() {
-    // IndexedDB'yi başlat
-    window.indexedDB = new IndexedDBManager();
-    const dbReady = await window.indexedDB.init();
-    
-    if (dbReady) {
-        console.log('✅ IndexedDB hazır');
-        
-        // localStorage'dan IndexedDB'ye migration
-        await migrateFromLocalStorage();
-        
-        // Persistent storage iste
-        await requestPersistentStorage();
-    } else {
-        console.warn('⚠️ IndexedDB başlatılamadı, localStorage kullanılacak');
-    }
+function init() {
+    console.log('📦 localStorage kullanılıyor');
     
     storage = new StorageManager();
     audioManager = new AudioManager(storage);
@@ -477,7 +463,9 @@ async function init() {
     updateUsageStats();
     
     // Yedekleme hatırlatıcısını kontrol et
-    checkBackupReminder();
+    setTimeout(() => {
+        checkBackupReminder();
+    }, 2000);
 }
 
 function loadVoices() {
@@ -1531,64 +1519,145 @@ if (!document.getElementById('secretTapStyles')) {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// MIGRATION - localStorage'dan IndexedDB'ye geçiş
+// BASIT YEDEKLEME SİSTEMİ - localStorage Export/Import
 // ═══════════════════════════════════════════════════════════════════
 
-async function migrateFromLocalStorage() {
-    const migrated = localStorage.getItem('indexeddb_migrated');
-    
-    if (migrated === 'true') {
-        console.log('✅ Migration zaten yapılmış');
-        return;
-    }
-    
-    console.log('🔄 localStorage → IndexedDB migration başlıyor...');
-    
+function exportData() {
     try {
-        // Ses kayıtlarını taşı
-        const recordingKeys = Object.keys(localStorage).filter(key => key.startsWith('voice_recording_'));
-        for (const key of recordingKeys) {
-            const letter = key.replace('voice_recording_', '');
-            const base64Audio = localStorage.getItem(key);
-            
-            if (base64Audio) {
-                const audioBlob = await window.indexedDB.base64ToBlob(base64Audio);
-                await window.indexedDB.saveRecording(letter, audioBlob);
-                console.log(`✅ Ses kaydı taşındı: ${letter}`);
+        // localStorage'dan HUMA verilerini topla
+        const data = {
+            version: '3.3',
+            exportDate: new Date().toISOString(),
+            data: {}
+        };
+        
+        // Tüm HUMA verilerini topla
+        for (let key in localStorage) {
+            if (key.startsWith('huma_') || key.startsWith('voice_recording_') || key.startsWith('indexeddb_migrated') || key.startsWith('lastBackupDate')) {
+                data.data[key] = localStorage.getItem(key);
             }
         }
         
-        // Promptları taşı
-        const promptsJSON = localStorage.getItem('huma_prompts');
-        if (promptsJSON) {
-            const prompts = JSON.parse(promptsJSON);
-            await window.indexedDB.savePrompts(prompts);
-            console.log('✅ Promptlar taşındı');
+        // Veri sayısını kontrol et
+        const dataCount = Object.keys(data.data).length;
+        if (dataCount === 0) {
+            alert('⚠️ Yedeklenecek veri bulunamadı.');
+            return;
         }
         
-        // Kritik ayarları taşı
-        const criticalSettings = ['apiKey', 'totalUsage', 'maxLimit', 'unlimited'];
-        for (const key of criticalSettings) {
-            const value = localStorage.getItem(`huma_${key}`);
-            if (value !== null) {
-                await window.indexedDB.saveSetting(key, value);
-                console.log(`✅ Ayar taşındı: ${key}`);
-            }
-        }
+        // JSON dosyası oluştur ve indir
+        const jsonString = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
         
-        // Migration tamamlandı işareti
-        localStorage.setItem('indexeddb_migrated', 'true');
-        console.log('✅ Migration tamamlandı!');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `huma-yedek-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Son yedekleme tarihini kaydet
+        localStorage.setItem('lastBackupDate', Date.now().toString());
+        
+        alert(`✅ Yedek başarıyla indirildi!\n\n${dataCount} veri kaydedildi.`);
         
     } catch (error) {
-        console.error('❌ Migration hatası:', error);
+        console.error('❌ Dışa aktarma hatası:', error);
+        alert('❌ Yedek oluşturulamadı: ' + error.message);
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// YEDEKLEME HATIRLATICI
-// ═══════════════════════════════════════════════════════════════════
+function importData() {
+    try {
+        // Dosya seçici oluştur
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importData = JSON.parse(event.target.result);
+                    
+                    // Veri formatını kontrol et
+                    if (!importData.data || typeof importData.data !== 'object') {
+                        alert('❌ Geçersiz yedek dosyası formatı!');
+                        return;
+                    }
+                    
+                    const dataCount = Object.keys(importData.data).length;
+                    
+                    if (confirm(`⚠️ ${dataCount} veri geri yüklenecek.\nMevcut verileriniz silinecek.\n\nDevam etmek istiyor musunuz?`)) {
+                        // Mevcut HUMA verilerini temizle
+                        const keysToRemove = [];
+                        for (let key in localStorage) {
+                            if (key.startsWith('huma_') || key.startsWith('voice_recording_')) {
+                                keysToRemove.push(key);
+                            }
+                        }
+                        keysToRemove.forEach(key => localStorage.removeItem(key));
+                        
+                        // Yeni verileri yükle
+                        for (let key in importData.data) {
+                            localStorage.setItem(key, importData.data[key]);
+                        }
+                        
+                        alert(`✅ ${dataCount} veri başarıyla geri yüklendi!\n\nSayfa yenilenecek.`);
+                        location.reload();
+                    }
+                } catch (error) {
+                    console.error('❌ İçe aktarma hatası:', error);
+                    alert('❌ Geçersiz yedek dosyası!');
+                }
+            };
+            
+            reader.readAsText(file);
+        };
+        
+        input.click();
+        
+    } catch (error) {
+        console.error('❌ İçe aktarma hatası:', error);
+        alert('❌ Yedek yüklenemedi: ' + error.message);
+    }
+}
 
+function showStorageInfo() {
+    try {
+        // localStorage verilerini say
+        let humaDataCount = 0;
+        let totalSize = 0;
+        
+        for (let key in localStorage) {
+            if (key.startsWith('huma_') || key.startsWith('voice_recording_')) {
+                humaDataCount++;
+                totalSize += localStorage.getItem(key).length;
+            }
+        }
+        
+        // Boyutu MB'ye çevir (yaklaşık)
+        const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+        
+        alert(`📊 Depolama Bilgisi\n\n` +
+              `💾 HUMA Verileri: ${humaDataCount} adet\n` +
+              `📏 Yaklaşık Boyut: ${sizeInMB} MB\n` +
+              `🗂️ Depolama: localStorage\n\n` +
+              `⚠️ Tarayıcı verilerini temizlerseniz silinebilir.\n` +
+              `💡 Düzenli yedek almayı unutmayın!`);
+        
+    } catch (error) {
+        console.error('❌ Depolama bilgisi hatası:', error);
+        alert('❌ Depolama bilgisi alınamadı.');
+    }
+}
+
+// Yedekleme hatırlatıcısı
 function checkBackupReminder() {
     const lastBackup = localStorage.getItem('lastBackupDate');
     
@@ -1605,112 +1674,6 @@ function checkBackupReminder() {
             if (confirm('💾 Verilerinizi 7 günden fazla yedeklemediniz.\n\nŞimdi yedek almak ister misiniz?')) {
                 exportData();
             }
-        }, 2000);
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DIŞA/İÇE AKTARMA FONKSİYONLARI
-// ═══════════════════════════════════════════════════════════════════
-
-async function exportData() {
-    if (!window.indexedDB) {
-        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
-        return;
-    }
-    
-    try {
-        const data = await window.indexedDB.exportAllData();
-        
-        if (!data) {
-            alert('❌ Veri dışa aktarılamadı!');
-            return;
-        }
-        
-        // JSON dosyası oluştur
-        const jsonString = JSON.stringify(data, null, 2);
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        // İndir
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `huma-yedek-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        // Son yedekleme tarihini kaydet
-        localStorage.setItem('lastBackupDate', Date.now().toString());
-        
-        alert('✅ Verileriniz başarıyla indirildi!');
-        
-    } catch (error) {
-        console.error('❌ Dışa aktarma hatası:', error);
-        alert('❌ Veri dışa aktarılamadı: ' + error.message);
-    }
-}
-
-async function importData() {
-    if (!window.indexedDB) {
-        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
-        return;
-    }
-    
-    try {
-        // Dosya seçici oluştur
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                try {
-                    const importData = JSON.parse(event.target.result);
-                    
-                    if (confirm('⚠️ Mevcut verileriniz silinecek ve yedekten geri yüklenecek.\n\nDevam etmek istiyor musunuz?')) {
-                        const success = await window.indexedDB.importAllData(importData);
-                        
-                        if (success) {
-                            alert('✅ Veriler başarıyla geri yüklendi!\n\nSayfa yenilenecek.');
-                            location.reload();
-                        } else {
-                            alert('❌ Veriler geri yüklenemedi!');
-                        }
-                    }
-                } catch (error) {
-                    console.error('❌ İçe aktarma hatası:', error);
-                    alert('❌ Geçersiz yedek dosyası!');
-                }
-            };
-            
-            reader.readAsText(file);
-        };
-        
-        input.click();
-        
-    } catch (error) {
-        console.error('❌ İçe aktarma hatası:', error);
-        alert('❌ Veri içe aktarılamadı: ' + error.message);
-    }
-}
-
-async function showStorageInfo() {
-    if (!window.indexedDB) {
-        alert('❌ IndexedDB henüz hazır değil. Lütfen sayfayı yenileyin.');
-        return;
-    }
-    
-    const info = await window.indexedDB.getStorageSize();
-    
-    if (info) {
-        alert(`📊 Depolama Bilgisi\n\nKullanılan: ${info.usageInMB} MB\nToplam: ${info.quotaInMB} MB\nDoluluk: %${info.percentage}`);
-    } else {
-        alert('⚠️ Depolama bilgisi alınamadı');
+        }, 3000); // 3 saniye sonra sor
     }
 }
