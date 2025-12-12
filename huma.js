@@ -3623,53 +3623,69 @@ function checkVoiceCloningStatus() {
 
 function showRecordingGuide() {
     const guideContent = `
-📖 Ses Klonlama Kayıt Rehberi
+📖 Ses Klonlama Kayıt Rehberi - v5.0
 
 🎯 AMAÇ:
-Sesinizi klonlamak için kaliteli ses örnekleri kaydetmek
+Hibrit TTS sistemi için sesinizin karakteristiklerini yakalamak
 
-🎤 KAYIT İPUÇLARI:
+🎤 MÜKEMMEL KAYIT İÇİN:
 
 1️⃣ ORTAM HAZIRLIĞI:
-• Sessiz bir ortam seçin
-• Arka plan gürültüsünü minimize edin
+• Sessiz bir oda seçin (yatak odası ideal)
+• Klima, fan gibi sürekli sesleri kapatın
 • Mikrofonu ağzınıza 15-20 cm uzaklıkta tutun
+• Telefonu elinizde sabit tutun
 
 2️⃣ SES KALİTESİ:
-• Normal konuşma hızında okuyun
-• Net ve anlaşılır telaffuz yapın
-• Çok yavaş veya çok hızlı konuşmayın
-• Doğal ses tonunuzu kullanın
+• Normal günlük konuşma hızınızı kullanın
+• Çok net ve anlaşılır telaffuz yapın
+• Doğal ses tonunuzu koruyun (yapay olmayın)
+• Nefes alış verişinizi kontrol edin
 
-3️⃣ KAYIT SÜRECİ:
-• Her harf/kelime için 2-3 saniye kayıt yapın
-• Kayıt başlamadan önce 1 saniye bekleyin
-• Kayıt bittikten sonra 1 saniye daha bekleyin
-• Hata yaparsanız kaydı tekrarlayın
+3️⃣ KAYIT TEKNİĞİ:
+• Her cümle için 10-30 saniye kayıt yapın
+• Kayıt başlamadan önce 2 saniye sessizlik
+• Cümleyi bitirdikten sonra 2 saniye daha bekleyin
+• Hata yaparsanız durdurup yeniden başlayın
 
-4️⃣ ÖRNEK METİNLER:
-• Verilen metinleri tam olarak okuyun
-• Noktalama işaretlerine dikkat edin
-• Vurguları doğal yapın
+4️⃣ ÖNERİLEN CÜMLELER:
+• "Merhaba, ben HUMA ile Türkçe öğreniyorum"
+• "Aferin sana! Çok güzel okudun, tebrik ederim"
+• "Günaydın anne, günaydın baba, günaydın kardeşim"
+• "Sıfır, bir, iki, üç, dört, beş, altı, yedi, sekiz, dokuz"
+• "At koşuyor, inek mörlüyor, tavuk gıdaklıyor"
 
-5️⃣ KALİTE KONTROL:
-• Sistem size kalite puanı verecek
-• %70'in üzerinde puan almaya çalışın
-• Düşük puanlı kayıtları tekrarlayın
+5️⃣ DUYGUSAL ÇEŞİTLİLİK:
+• Bazı cümleleri neşeli okuyun
+• Bazılarını sakin ve huzurlu
+• Soru cümlelerinde tonunuzu yükseltin
+• Ünlem cümlelerinde coşkulu olun
 
-✅ İYİ KAYIT ÖRNEĞİ:
-"A harfi Annenin A'sı" - Net, sakin, doğal
+6️⃣ KALİTE KONTROL:
+• Sistem %0-100 arası puan verir
+• %80'in üzerinde puan hedefleyin
+• Düşük puanlı kayıtları mutlaka tekrarlayın
+• Gürültü varsa kırmızı uyarı alırsınız
+
+✅ MÜKEMMEL KAYIT ÖRNEĞİ:
+"Güzel çiçekler bahçede açmış" - Net, doğal, duygulu
 
 ❌ KÖTÜ KAYIT ÖRNEKLERİ:
-• Çok hızlı: "AharfiAnneninAsi"
-• Çok yavaş: "A... harfi... Annenin... A'sı"
-• Gürültülü: Arka planda müzik/konuşma
+• Robot gibi: "Gü-zel çi-çek-ler bah-çe-de aç-mış"
+• Çok hızlı: "Güzelçiçeklerbahçedeaçmış"
+• Monoton: Hiç duygu katmadan okumak
+• Gürültülü: TV, müzik, konuşma sesleri
 
-🔄 TEKRAR KAYIT:
-Memnun kalmazsanız istediğiniz kadar tekrar kayıt yapabilirsiniz.
+🔄 KAYIT STRATEJİSİ:
+• İlk 5 kayıt: Temel sesler (a,e,i,o,u)
+• Sonraki 5 kayıt: Günlük konuşma
+• Son 5 kayıt: Duygusal çeşitlilik
 
-💡 İPUCU:
-En az 10-15 farklı ses örneği kaydetmeniz önerilir.
+💡 PRO İPUÇLARI:
+• Sabah kayıt yapın (ses daha temiz)
+• Su için (ağız kuruluğu önlemek için)
+• 15-20 farklı cümle kaydedin
+• Her kayıttan sonra dinleyip kontrol edin
     `;
     
     alert(guideContent);
@@ -5435,71 +5451,80 @@ function checkAccessibility() {
 // Optimal ses klonlama eğitim metinleri
 function getOptimalTrainingTexts() {
     return [
-        // Türkçe alfabe harflerini kapsayan cümleler
-        'A harfi Annenin A\'sı, B harfi Babanın B\'si, C harfi Ceylinin C\'si.',
-        'Ç harfi Çiçeğin Ç\'si, D harfi Dedenin D\'si, E harfi Evin E\'si.',
-        'F harfi Fıstığın F\'sı, G harfi Güneşin G\'si, Ğ harfi Dağın Ğ\'sı.',
-        'H harfi Halanın H\'sı, I harfi Irmağın I\'sı, İ harfi İpliğin İ\'si.',
-        'J harfi Jimnastiğin J\'si, K harfi Kalemin K\'sı, L harfi Lambanın L\'si.',
-        'M harfi Meyvenin M\'si, N harfi Nenenin N\'si, O harfi Okumun O\'su.',
-        'Ö harfi Öğretmenin Ö\'sü, P harfi Pastanın P\'si, R harfi Resminin R\'si.',
-        'S harfi Saatin S\'sı, Ş harfi Şapkanın Ş\'sı, T harfi Topun T\'sı.',
-        'U harfi Uçağın U\'su, Ü harfi Ütünün Ü\'sü, V harfi Vazonun V\'sı.',
-        'Y harfi Yatağın Y\'sı, Z harfi Zeytinin Z\'si.',
+        // 🎯 SES KLONLAMA İÇİN OPTİMİZE EDİLMİŞ CÜMLELER
         
-        // Sayılar
-        'Sıfır, bir, iki, üç, dört, beş, altı, yedi, sekiz, dokuz.',
-        'Bir elma, iki armut, üç kiraz, dört çilek, beş üzüm.',
-        
-        // Çiftlik hayvanları teması
-        'At koşuyor, inek möörlüyor, tavuk gıdaklıyor, koyun meliyor.',
-        'Çiftlikte horoz öter, ördek vak vak der, güvercin uçar.',
-        'Buzağı süt içer, dana otlar, öküz çeker, manda yüzer.',
-        
-        // Ev eşyaları teması  
-        'Masada bardak var, sandalyede yastık var, dolabın içinde tabak var.',
-        'Ayna duvarda, lamba tavanda, halı yerde, perde pencerede.',
-        'Çatal, kaşık, bıçak mutfakta, sabun, havlu banyoda.',
-        
-        // Fonetik çeşitlilik için özel cümleler
+        // 1. Temel Fonetik Çeşitlilik (Tüm Türkçe sesler)
+        'Merhaba, ben HUMA ile Türkçe öğreniyorum. Çok eğlenceli ve faydalı.',
         'Güzel çiçekler bahçede açmış, arılar vızıldayarak bal yapıyor.',
-        'Küçük kedi yumuşak yastığın üzerinde uyuyor, rüya görüyor.',
-        'Şirin şarkıcı şahane şarkılar söylüyor, şeytan şaşırıyor.',
-        'Çocuklar çimlerde çiçek topluyor, çok çalışkan çocuklar.',
-        'Öğretmen öğrencilere ödev veriyor, özenle öğretmeye devam ediyor.',
+        'Küçük kedi yumuşak yastığın üzerinde uyuyor, tatlı rüyalar görüyor.',
+        'Şirin şarkıcı şahane şarkılar söylüyor, herkes hayran kalıyor.',
         
-        // Uzun sesli harfler
-        'Aaa, eee, iii, ooo, uuu sesleri çıkarıyorum.',
-        'Ağaç altında oturuyorum, kuş sesleri dinliyorum.',
-        'İyi günler, nasılsınız, çok teşekkür ederim.',
+        // 2. Duygusal Tonlama Çeşitliliği
+        'Aferin sana! Çok güzel okudun, gerçekten tebrik ederim.',
+        'Dikkatli ol lütfen, yavaş yavaş ve özenle oku.',
+        'Harika! Mükemmel! Sen çok başarılı bir çocuksun!',
+        'Üzülme, her şey yoluna girecek, sabırlı ol.',
         
-        // Sessiz harfler ve geçişler
-        'Kedi kapıda, köpek bahçede, kuş kafeste, kaplumbağa suda.',
-        'Pembe panda patates pişiriyor, papa parmağını penceye vuruyor.',
-        'Tatlı teyze tencerede tarhana pişiriyor, tam tamına.',
+        // 3. Günlük Konuşma Kalıpları
+        'Günaydın anne, günaydın baba, günaydın sevgili kardeşim.',
+        'Teşekkür ederim, rica ederim, özür dilerim, hoşça kalın.',
+        'Ne yapıyorsun? Nasılsın? İyi misin? Yardıma ihtiyacın var mı?',
+        'Evet tabii, hayır teşekkürler, belki daha sonra.',
         
-        // Duygusal tonlamalar
-        'Merhaba sevgili çocuklar! Bugün çok güzel bir gün.',
-        'Aferin sana! Çok güzel okudun, tebrik ederim.',
-        'Dikkatli ol lütfen, yavaş yavaş oku.',
-        'Harika! Mükemmel! Çok başarılısın!',
+        // 4. Alfabe ve Sayılar (Eğitim odaklı)
+        'A harfi Anne, B harfi Baba, C harfi Ceylan, Ç harfi Çiçek.',
+        'Sıfır, bir, iki, üç, dört, beş, altı, yedi, sekiz, dokuz, on.',
+        'Bir elma, iki armut, üç kiraz, dört çilek, beş tane üzüm.',
         
-        // Günlük konuşma kalıpları
-        'Günaydın anne, günaydın baba, günaydın kardeşim.',
-        'Teşekkür ederim, rica ederim, özür dilerim.',
-        'Evet, hayır, belki, tabii ki, kesinlikle.',
-        'Ne yapıyorsun? Nasılsın? İyi misin?',
+        // 5. Çiftlik ve Hayvanlar (HUMA teması)
+        'At koşuyor, inek mörlüyor, tavuk gıdaklıyor, koyun meliyor.',
+        'Çiftlikte horoz öter, ördek vak vak der, güvercin gökyüzünde uçar.',
+        'Buzağı süt içer, dana otlar, öküz arabayı çeker.',
         
-        // Tekrarlı sesler (ses klonlama için önemli)
-        'La la la, ma ma ma, na na na, ra ra ra.',
-        'Ba ba ba, da da da, ga ga ga, ka ka ka.',
-        'Sa sa sa, şa şa şa, ta ta ta, za za za.',
-        
-        // Karma cümleler (tüm sesleri içeren)
-        'Çok güzel bir gün, güneş parlıyor, kuşlar şarkı söylüyor.',
+        // 6. Ev ve Aile (Tanıdık kelimeler)
+        'Masada bardak var, sandalyede yastık var, dolabın içinde tabak var.',
+        'Ayna duvarda asılı, lamba tavanda parlıyor, halı yerde serili.',
         'Annem mutfakta yemek pişiriyor, babam bahçede çiçek suluyor.',
-        'Okula gidiyorum, arkadaşlarımla oynuyorum, öğretmenimi dinliyorum.',
-        'Kitap okumayı seviyorum, resim yapmayı seviyorum, müzik dinlemeyi seviyorum.'
+        
+        // 7. Uzun Sesli Harfler (Ses karakteristiği için)
+        'Aaa, eee, iii, ooo, uuu sesleri çıkararak nefes alıyorum.',
+        'Ağaç altında oturuyorum, kuş sesleri dinliyorum, huzur buluyorum.',
+        'İyi günler, nasılsınız, çok çok teşekkür ederim.',
+        
+        // 8. Sessiz Harfler ve Geçişler
+        'Kedi kapıda bekliyor, köpek bahçede oynuyor, kuş kafeste şarkı söylüyor.',
+        'Pembe panda patates pişiriyor, papa parmağını pencereye vuruyor.',
+        'Tatlı teyze tencerede tarhana pişiriyor, tam tamına lezzet katıyor.',
+        
+        // 9. Tekrarlı Sesler (Ses klonlama algoritması için kritik)
+        'La la la, ma ma ma, na na na, ra ra ra, sa sa sa.',
+        'Ba ba ba, da da da, ga ga ga, ka ka ka, pa pa pa.',
+        'Ça ça ça, şa şa şa, ta ta ta, za za za, fa fa fa.',
+        
+        // 10. Karma Uzun Cümleler (Doğal konuşma ritmi)
+        'Bugün çok güzel bir gün, güneş parlıyor, kuşlar şarkı söylüyor, çiçekler açıyor.',
+        'Okula giderken yolda arkadaşlarımla karşılaştım, birlikte yürüdük, çok eğlendik.',
+        'Akşam yemeğinde ailemle birlikte oturduk, güzel sohbet ettik, çok keyifli geçti.',
+        
+        // 11. Özel Türkçe Sesler (Ğ, Ü, Ö, Ş, Ç)
+        'Dağda doğan güneş, gökyüzünü aydınlatıyor, çok güzel görünüyor.',
+        'Öğretmen öğrencilere ödev veriyor, özenle öğretmeye devam ediyor.',
+        'Üzüm üreticisi ürünlerini ücretsiz dağıtıyor, çok cömert davranıyor.',
+        
+        // 12. Hız ve Ritim Çeşitliliği
+        'Hızlı hızlı koşuyorum, yavaş yavaş yürüyorum, duruyorum, dinleniyorum.',
+        'Bir... iki... üç... dört... beş... altı... yedi... sekiz... dokuz... on!',
+        'Çok çok çok güzel, çok çok güzel, çok güzel, güzel.',
+        
+        // 13. Soru Cümleleri (Tonlama çeşitliliği)
+        'Bu nedir? Şu nedir? O nedir? Hangi renk? Kaç tane?',
+        'Nerede? Ne zaman? Nasıl? Neden? Kim? Ne için?',
+        'Gidiyor musun? Geliyor musun? Yapıyor musun? Biliyor musun?',
+        
+        // 14. Ünlemler ve Duygusal İfadeler
+        'Vay canına! Aman Tanrım! Ne güzel! Çok şaşırtıcı!',
+        'Ah! Oh! Uf! Hmm! Aha! İşte! Tamam! Peki!',
+        'Bravo! Süper! Harika! Muhteşem! Mükemmel! Fevkalade!'
     ];
 }
 
@@ -5507,18 +5532,38 @@ function getOptimalTrainingTexts() {
 function getRecommendedRecordingTexts() {
     const texts = getOptimalTrainingTexts();
     
-    // En önemli 10 cümleyi seç (fonetik çeşitlilik için)
+    // 🎯 SES KLONLAMA İÇİN EN İYİ 15 CÜMLE (Fonetik çeşitlilik + Duygusal tonlama)
     const recommended = [
-        texts[0],  // Alfabe A-C
-        texts[1],  // Alfabe Ç-E  
-        texts[2],  // Alfabe F-Ğ
-        texts[10], // Sayılar
-        texts[12], // Çiftlik hayvanları
-        texts[15], // Ev eşyaları
-        texts[18], // Fonetik çeşitlilik
-        texts[22], // Uzun sesli harfler
-        texts[26], // Duygusal tonlama
-        texts[32]  // Karma cümle
+        // Temel tanıtım (doğal konuşma)
+        'Merhaba, ben HUMA ile Türkçe öğreniyorum. Çok eğlenceli ve faydalı.',
+        
+        // Duygusal çeşitlilik
+        'Aferin sana! Çok güzel okudun, gerçekten tebrik ederim.',
+        'Dikkatli ol lütfen, yavaş yavaş ve özenle oku.',
+        
+        // Günlük konuşma
+        'Günaydın anne, günaydın baba, günaydın sevgili kardeşim.',
+        'Ne yapıyorsun? Nasılsın? İyi misin? Yardıma ihtiyacın var mı?',
+        
+        // Sayılar ve alfabe
+        'Sıfır, bir, iki, üç, dört, beş, altı, yedi, sekiz, dokuz, on.',
+        'A harfi Anne, B harfi Baba, C harfi Ceylan, Ç harfi Çiçek.',
+        
+        // HUMA temaları
+        'At koşuyor, inek mörlüyor, tavuk gıdaklıyor, koyun meliyor.',
+        'Masada bardak var, sandalyede yastık var, dolabın içinde tabak var.',
+        
+        // Fonetik zenginlik
+        'Güzel çiçekler bahçede açmış, arılar vızıldayarak bal yapıyor.',
+        'Küçük kedi yumuşak yastığın üzerinde uyuyor, tatlı rüyalar görüyor.',
+        
+        // Özel Türkçe sesler
+        'Dağda doğan güneş, gökyüzünü aydınlatıyor, çok güzel görünüyor.',
+        'Öğretmen öğrencilere ödev veriyor, özenle öğretmeye devam ediyor.',
+        
+        // Soru ve ünlemler
+        'Bu nedir? Şu nedir? O nedir? Hangi renk? Kaç tane?',
+        'Vay canına! Aman Tanrım! Ne güzel! Çok şaşırtıcı!'
     ];
     
     return recommended;
