@@ -5,9 +5,9 @@
 // Son Güncelleme: 2024-12-11
 // ═══════════════════════════════════════════════════════════════════
 
-const HUMA_VERSION = '4.7.0';
+const HUMA_VERSION = '4.8.0';
 const HUMA_BUILD_DATE = '2024-12-11';
-const HUMA_FEATURES = ['Hibrit Ses Sistemi', 'Google TTS Yok', 'Tarayıcı TTS + Ses Profili', 'Motor Test Kontrolleri'];
+const HUMA_FEATURES = ['Düzgün Hibrit Sistem', 'Tarayıcı TTS Okur', 'Ses Karakteristikleri', 'Motor Test Kontrolleri'];
 
 // Türkçe Alfabe - 29 harf
 const TURKISH_LETTERS = [
@@ -162,12 +162,7 @@ class StorageManager {
             rate: 'huma_rate',
             pitch: 'huma_pitch',
             voice: 'huma_voice',
-            apiKey: 'huma_apikey',
-            engine: 'huma_engine',
-            googleVoice: 'huma_google_voice',
-            totalUsage: 'huma_total_usage',
-            maxLimit: 'huma_max_limit',
-            unlimited: 'huma_unlimited',
+            // Google TTS configs kaldırıldı
             audioCache: 'huma_audio_cache'
         };
     }
@@ -200,7 +195,7 @@ class StorageManager {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// AUDIO MANAGER - Google TTS ve ses yönetimi
+// AUDIO MANAGER - Hibrit ses yönetimi (Tarayıcı TTS + Ses Profili)
 // ═══════════════════════════════════════════════════════════════════
 
 class AudioManager {
@@ -210,10 +205,7 @@ class AudioManager {
         this.audioCache = new Map();
         this.isPlayingFlag = false;
 
-        this.apiKey = this.storage.get('apiKey', '');
-        this.totalUsage = parseInt(this.storage.get('totalUsage', '0'));
-        this.maxLimit = parseInt(this.storage.get('maxLimit', '90'));
-        this.unlimitedUsage = this.storage.get('unlimited', 'false') === 'true';
+        // Google TTS configs kaldırıldı
 
         this.loadCacheFromStorage();
     }
@@ -233,43 +225,7 @@ class AudioManager {
         this.storage.setJSON('audioCache', cacheObj);
     }
 
-    setApiKey(key) {
-        this.apiKey = key;
-        this.storage.set('apiKey', key);
-    }
-
-    getApiKey() {
-        return this.apiKey;
-    }
-
-    setUsageLimit(limit, unlimited = false) {
-        this.unlimitedUsage = unlimited;
-        this.maxLimit = limit;
-        this.storage.set('maxLimit', limit.toString());
-        this.storage.set('unlimited', unlimited.toString());
-    }
-
-    addUsage(characters) {
-        this.totalUsage += characters;
-        this.storage.set('totalUsage', this.totalUsage.toString());
-    }
-
-    canUseAPI(textLength) {
-        if (this.unlimitedUsage) return true;
-        return this.totalUsage + textLength <= this.maxLimit;
-    }
-
-    getRemainingQuota() {
-        if (this.unlimitedUsage) return '∞';
-        return Math.max(0, this.maxLimit - this.totalUsage);
-    }
-
-    getCacheKey(text) {
-        const voiceName = this.storage.get('googleVoice', 'tr-TR-Wavenet-A');
-        const pitch = this.storage.get('pitch', '1.5');
-        const rate = this.storage.get('rate', '0.75');
-        return `${text}|${voiceName}|${pitch}|${rate}`;
-    }
+    // Google TTS metodları kaldırıldı
 
     // GOOGLE TTS KALDIRILDI - Sadece hibrit sistem (Tarayıcı TTS + Ses Profili)
     async speak(text) {
@@ -385,9 +341,8 @@ class AudioManager {
         const turkishVoices = voices.filter(v => v.lang.startsWith('tr'));
         
         if (turkishVoices.length > 0) {
-            // En kaliteli Türkçe sesi seç (Google TTS hariç)
-            const bestVoice = turkishVoices.find(v => !v.name.includes('Google') && v.name.includes('Microsoft')) ||
-                             turkishVoices.find(v => !v.name.includes('Google')) ||
+            // En kaliteli Türkçe sesi seç
+            const bestVoice = turkishVoices.find(v => v.name.includes('Microsoft')) ||
                              turkishVoices[0];
             utterance.voice = bestVoice;
             console.log(`🎯 Hibrit ses seçildi: ${bestVoice.name}`);
@@ -1972,215 +1927,125 @@ class AudioSynthesizer {
         }
     }
     
-    // Tamamen kullanıcının sesiyle sentez
+    // Hibrit sistem: Tarayıcı TTS + Ses karakteristikleri
     async synthesizeFromUserVoice(text, profile) {
         try {
-            console.log('🧠 AI Ses Klonlama: Ses örneklerinden metin oluşturuluyor...');
+            console.log('🎭 Hibrit sistem: Tarayıcı TTS + Ses karakteristikleriniz');
             
-            // Ses örneklerini analiz et
-            const voiceSamples = profile.samples || [];
-            if (voiceSamples.length === 0) {
-                throw new Error('Ses örnekleri bulunamadı');
-            }
+            // Ses örneklerinden karakteristikleri analiz et
+            const voiceCharacteristics = await this.analyzeVoiceCharacteristics(profile);
+            console.log('📊 Ses karakteristikleri analiz edildi:', voiceCharacteristics);
             
-            // Metni hece hece böl
-            const syllables = this.breakTextIntoSyllables(text);
-            console.log('📝 Hece analizi:', syllables);
-            
-            // Her hece için en uygun ses parçasını bul
-            const audioSegments = [];
-            for (const syllable of syllables) {
-                const segment = await this.findBestAudioSegment(syllable, voiceSamples);
-                if (segment) {
-                    audioSegments.push(segment);
-                }
-            }
-            
-            if (audioSegments.length === 0) {
-                throw new Error('Uygun ses parçaları bulunamadı');
-            }
-            
-            // Ses parçalarını birleştir ve çal
-            await this.combineAndPlayAudioSegments(audioSegments);
-            
-            console.log('✅ Tamamen sizin sesinizle okuma tamamlandı!');
-            return true;
+            // Tarayıcı TTS ile karakteristikleri uygula
+            return await this.speakWithBrowserAndCharacteristics(text, voiceCharacteristics);
             
         } catch (error) {
-            console.error('❌ AI Ses klonlama hatası:', error);
+            console.error('❌ Hibrit sistem hatası:', error);
             throw error;
         }
     }
     
-    // Metni hecelere böl
-    breakTextIntoSyllables(text) {
-        // Türkçe hece kurallarına göre basit bölme
-        const words = text.split(' ');
-        const syllables = [];
-        
-        for (const word of words) {
-            // Basit hece bölme (gerçek hece analizi çok karmaşık)
-            const wordSyllables = this.splitWordIntoSyllables(word);
-            syllables.push(...wordSyllables);
-        }
-        
-        return syllables;
-    }
-    
-    // Kelimeyi hecelere böl
-    splitWordIntoSyllables(word) {
-        // Çok basit hece bölme (gerçekte daha karmaşık algoritma gerekir)
-        const vowels = 'aeiouıöüAEIOUIÖÜ';
-        const syllables = [];
-        let currentSyllable = '';
-        
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            currentSyllable += char;
-            
-            // Sesli harf bulunca ve sonraki karakter sessiz ise hece tamamla
-            if (vowels.includes(char)) {
-                if (i + 1 < word.length && !vowels.includes(word[i + 1])) {
-                    // Bir sonraki sessiz harfi de ekle
-                    if (i + 1 < word.length) {
-                        currentSyllable += word[i + 1];
-                        i++; // Bir karakter atla
-                    }
-                }
-                syllables.push(currentSyllable);
-                currentSyllable = '';
-            }
-        }
-        
-        // Kalan karakterler varsa ekle
-        if (currentSyllable) {
-            if (syllables.length > 0) {
-                syllables[syllables.length - 1] += currentSyllable;
-            } else {
-                syllables.push(currentSyllable);
-            }
-        }
-        
-        return syllables.filter(s => s.length > 0);
-    }
-    
-    // Hece için en uygun ses parçasını bul
-    async findBestAudioSegment(syllable, voiceSamples) {
-        try {
-            console.log(`🔍 "${syllable}" hecesi için ses parçası aranıyor...`);
-            
-            // Önce spesifik metin kaydı ara
-            const specificSample = this.findSpecificTextSample(syllable, voiceSamples);
-            if (specificSample) {
-                console.log(`✅ "${syllable}" için spesifik kayıt bulundu!`);
-                return {
-                    syllable: syllable,
-                    audioData: specificSample.audioData,
-                    duration: specificSample.duration || 1.0,
-                    isSpecific: true
-                };
-            }
-            
-            // Spesifik kayıt yoksa genel ses örneğini kullan
-            const bestSample = voiceSamples.sort((a, b) => (b.quality || 0) - (a.quality || 0))[0];
-            
-            if (!bestSample || !bestSample.audioData) {
-                return null;
-            }
-            
-            console.log(`⚠️ "${syllable}" için genel ses örneği kullanılıyor`);
+    // Ses örneklerinden karakteristikleri analiz et
+    async analyzeVoiceCharacteristics(profile) {
+        const samples = profile.samples || [];
+        if (samples.length === 0) {
+            // Varsayılan karakteristikler
             return {
-                syllable: syllable,
-                audioData: bestSample.audioData,
-                duration: 0.5,
-                isSpecific: false
-            };
-            
-        } catch (error) {
-            console.error(`❌ "${syllable}" için ses parçası bulunamadı:`, error);
-            return null;
-        }
-    }
-    
-    // Spesifik metin için ses kaydı ara
-    findSpecificTextSample(text, voiceSamples) {
-        // localStorage'dan spesifik metin kayıtlarını ara
-        const textKey = `voice_text_${text.toLowerCase().replace(/[^a-zçğıöşü]/g, '')}`;
-        const specificRecording = localStorage.getItem(textKey);
-        
-        if (specificRecording) {
-            return {
-                audioData: specificRecording,
-                text: text,
-                isSpecific: true
+                rate: 0.85,
+                pitch: 1.15,
+                volume: 1.0,
+                tone: 'natural'
             };
         }
         
-        // Ses örnekleri içinde de ara (eğer metin bilgisi varsa)
-        for (const sample of voiceSamples) {
-            if (sample.text && sample.text.toLowerCase().includes(text.toLowerCase())) {
-                return sample;
+        // Ses örneklerinden ortalama karakteristikleri hesapla
+        let totalRate = 0;
+        let totalPitch = 0;
+        let totalVolume = 0;
+        let validSamples = 0;
+        
+        for (const sample of samples) {
+            if (sample.characteristics) {
+                totalRate += sample.characteristics.rate || 0.85;
+                totalPitch += sample.characteristics.pitch || 1.15;
+                totalVolume += sample.characteristics.volume || 1.0;
+                validSamples++;
             }
         }
         
-        return null;
-    }
-    
-    // Ses parçalarını birleştir ve çal
-    async combineAndPlayAudioSegments(segments) {
-        try {
-            console.log(`🎵 ${segments.length} ses parçası birleştiriliyor...`);
-            
-            // Basit yaklaşım: İlk ses parçasını çal (gerçekte tüm parçalar birleştirilmeli)
-            if (segments.length > 0) {
-                const firstSegment = segments[0];
-                await this.playAudioData(firstSegment.audioData);
-            }
-            
-        } catch (error) {
-            console.error('❌ Ses parçaları birleştirme hatası:', error);
-            throw error;
+        if (validSamples > 0) {
+            return {
+                rate: totalRate / validSamples,
+                pitch: totalPitch / validSamples,
+                volume: totalVolume / validSamples,
+                tone: 'analyzed'
+            };
+        } else {
+            // Profil parametrelerini kullan
+            return {
+                rate: profile.parameters?.rate || 0.85,
+                pitch: profile.parameters?.pitch || 1.15,
+                volume: profile.parameters?.volume || 1.0,
+                tone: 'profile'
+            };
         }
     }
     
-    // Ses verisini çal
-    async playAudioData(base64Data) {
+    // Tarayıcı TTS + Karakteristikler
+    async speakWithBrowserAndCharacteristics(text, characteristics) {
         return new Promise((resolve, reject) => {
+            if (!('speechSynthesis' in window)) {
+                reject(new Error('Tarayıcınız ses sentezini desteklemiyor.'));
+                return;
+            }
+            
             try {
-                console.log('🔊 Sizin sesinizle oluşturulan ses çalınıyor...');
+                console.log(`🎭 Hibrit okuma: "${text}" + Sizin karakteristikleriniz`);
                 
-                // Base64'ü blob'a çevir
-                const binaryString = atob(base64Data.split(',')[1] || base64Data);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Türkçe ses seç
+                const voices = speechSynthesis.getVoices();
+                const turkishVoices = voices.filter(v => v.lang.startsWith('tr'));
+                
+                if (turkishVoices.length > 0) {
+                    const bestVoice = turkishVoices.find(v => v.name.includes('Microsoft')) ||
+                                     turkishVoices[0];
+                    utterance.voice = bestVoice;
+                    console.log(`🎯 Hibrit ses: ${bestVoice.name}`);
                 }
                 
-                const blob = new Blob([bytes], { type: 'audio/webm' });
-                const url = URL.createObjectURL(blob);
+                // Karakteristikleri uygula
+                utterance.rate = characteristics.rate;
+                utterance.pitch = characteristics.pitch;
+                utterance.volume = characteristics.volume;
                 
-                const audio = new Audio(url);
+                console.log(`🎛️ Karakteristikler: Rate=${utterance.rate}, Pitch=${utterance.pitch}, Volume=${utterance.volume}`);
                 
-                audio.onended = () => {
-                    URL.revokeObjectURL(url);
-                    console.log('✅ Sizin sesinizle oluşturulan ses çalma tamamlandı');
-                    resolve();
+                utterance.onstart = () => {
+                    console.log(`🔊 Hibrit okuma başladı: "${text}"`);
                 };
                 
-                audio.onerror = (error) => {
-                    URL.revokeObjectURL(url);
-                    console.error('❌ Ses çalma hatası:', error);
-                    reject(error);
+                utterance.onend = () => {
+                    console.log(`✅ Hibrit okuma tamamlandı: "${text}"`);
+                    resolve(true);
                 };
                 
-                audio.play();
+                utterance.onerror = (event) => {
+                    console.error('❌ Hibrit sistem hatası:', event.error);
+                    reject(new Error('Hibrit sistem hatası: ' + (event.error || 'Bilinmeyen hata')));
+                };
+                
+                speechSynthesis.speak(utterance);
                 
             } catch (error) {
-                console.error('❌ Ses çalma hatası:', error);
+                console.error('❌ Hibrit sistem başlatma hatası:', error);
                 reject(error);
             }
         });
     }
+    
+    // HECE ANALİZİ VE SES PARÇALARI KALDIRILDI - Hibrit sistem kullanılıyor
     
     // SPESİFİK METİN KAYDI KALDIRILDI
     
@@ -3202,17 +3067,7 @@ function loadSettings() {
     document.getElementById('speechPitch').value = speechPitch;
     document.getElementById('pitchValue').textContent = speechPitch;
 
-    const apiKey = storage.get('apiKey');
-    if (apiKey) {
-        document.getElementById('apiKey').value = apiKey;
-    }
-
-    ttsEngine = storage.get('engine', 'browser');
-    document.getElementById('ttsEngine').value = ttsEngine;
-    updateEngineUI();
-
-    const googleVoice = storage.get('googleVoice', 'tr-TR-Wavenet-A');
-    document.getElementById('googleVoiceSelect').value = googleVoice;
+    // Google TTS ayarları kaldırıldı
 
     const maxLimit = parseInt(storage.get('maxLimit', '90'));
     document.getElementById('maxLimit').value = maxLimit;
