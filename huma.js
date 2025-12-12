@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
 // HUMA - Türkçe Alfabe Öğrenme Uygulaması
-// Ses Klonlama Sistemi ile Birleştirilmiş Versiyon
-// Versiyon: 4.1.0 - Debug Sistemi
-// Son Güncelleme: 2024-12-11
+// Saf Ses Klonlama Sistemi - Google TTS Kaldırıldı
+// Versiyon: 5.0.0 - Hibrit TTS Sistemi
+// Son Güncelleme: 2025-01-01
 // ═══════════════════════════════════════════════════════════════════
 
 const HUMA_VERSION = '5.0.0';
@@ -3563,12 +3563,12 @@ function showVersionInfo() {
 • Build Tarihi: ${HUMA_BUILD_DATE}
 • Özellikler: ${HUMA_FEATURES.join(', ')}
 
-🆕 YENİ ÖZELLİKLER (v4.1.0):
-• 🎤 Ses Klonlama Sistemi
-• 🔍 Debug ve Durum Kontrol
-• 📖 Kayıt Rehberi
-• 🛠️ Gelişmiş Hata Yönetimi
-• 📱 Mobil Safari Uyumluluğu
+🆕 YENİ ÖZELLİKLER (v5.0.0):
+• 🚫 Google TTS Tamamen Kaldırıldı
+• 🎤 Saf Ses Klonlama Sistemi
+• � Hibrit eTTS (Kullanıcı Sesi + Tarayıcı)
+• ♾️ Sınırsız Kullanım (API Yok)
+• 🌐 Tamamen Offline Çalışma
 
 🔧 TEKNİK BİLGİLER:
 • Tarayıcı: ${navigator.userAgent.split(' ')[0]}
