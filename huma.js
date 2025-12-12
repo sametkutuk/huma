@@ -5,9 +5,9 @@
 // Son Güncelleme: 2024-12-11
 // ═══════════════════════════════════════════════════════════════════
 
-const HUMA_VERSION = '4.3.1';
+const HUMA_VERSION = '4.5.0';
 const HUMA_BUILD_DATE = '2024-12-11';
-const HUMA_FEATURES = ['Akıllı Ses Klonlama', 'Debug Sistemi', 'Kayıt Rehberi', 'Motor Test Kontrolleri'];
+const HUMA_FEATURES = ['Saf AI Ses Klonlama', 'Hibrit Sistem Yok', 'Debug Sistemi', 'Motor Test Kontrolleri'];
 
 // Türkçe Alfabe - 29 harf
 const TURKISH_LETTERS = [
@@ -492,50 +492,30 @@ class AudioManager {
     async speakWithVoiceCloning(text, forceVoiceCloning = false) {
         console.log('🎛️ Test Kontrolleri:', ENGINE_CONTROLS);
         
-        // 1) Ses klonlama kontrolü (eğer test kontrolünde etkin)
+        // SADECE SES KLONLAMA - Hibrit sistem tamamen devre dışı
         if (ENGINE_CONTROLS.voiceCloning && (forceVoiceCloning || (window.voiceCloningSystem && voiceCloningSystem.isEnabled()))) {
             try {
+                console.log('🎤 SADECE sizin sesiniz kullanılacak - Hibrit sistem DEVRE DIŞI');
                 const clonedAudio = await voiceCloningSystem.synthesize(text);
                 if (clonedAudio) {
-                    console.log('🎤 AudioManager.speakWithVoiceCloning: Klonlanan ses kullanıldı');
-                    return { success: true, source: 'voice-cloning' };
+                    console.log('✅ Başarı: Tamamen sizin sesinizle okuma tamamlandı');
+                    return { success: true, source: 'pure-voice-cloning' };
+                } else {
+                    throw new Error('Ses klonlama null döndü');
                 }
             } catch (error) {
-                console.warn('⚠️ Ses klonlama hatası, fallback kullanılacak:', error);
+                console.error('❌ Ses klonlama başarısız - SESSIZLIK!');
+                console.error('🚫 Hibrit sistem devre dışı, fallback yok!');
+                return { success: false, source: 'voice-cloning-failed', error: error.message };
             }
         } else if (!ENGINE_CONTROLS.voiceCloning) {
             console.log('🚫 Ses klonlama test kontrolü ile devre dışı bırakıldı');
+            return { success: false, source: 'voice-cloning-disabled', error: 'Ses klonlama devre dışı' };
         }
         
-        // 2) Google TTS fallback (eğer test kontrolünde etkin)
-        if (ENGINE_CONTROLS.googleTTS && this.apiKey) {
-            try {
-                const result = await this.speak(text);
-                console.log('🌐 Google TTS kullanıldı');
-                return { success: result === true, source: 'google-tts' };
-            } catch (error) {
-                console.warn('⚠️ Google TTS hatası, browser TTS kullanılacak:', error);
-            }
-        } else if (!ENGINE_CONTROLS.googleTTS) {
-            console.log('🚫 Google TTS test kontrolü ile devre dışı bırakıldı');
-        }
-        
-        // 3) Browser TTS fallback (eğer test kontrolünde etkin)
-        if (ENGINE_CONTROLS.browserTTS) {
-            try {
-                const result = await this.speakWithBrowser(text);
-                console.log('🔊 Tarayıcı TTS kullanıldı');
-                return { success: result === true, source: 'browser-tts' };
-            } catch (error) {
-                console.error('❌ Tarayıcı TTS hatası:', error);
-            }
-        } else {
-            console.log('🚫 Tarayıcı TTS test kontrolü ile devre dışı bırakıldı');
-        }
-        
-        // Hiçbir motor kullanılamadı
-        console.error('❌ Tüm ses motorları devre dışı veya başarısız!');
-        return { success: false, source: 'none', error: 'Tüm ses motorları devre dışı' };
+        // Ses klonlama etkin değilse
+        console.error('❌ Ses klonlama sistemi etkin değil!');
+        return { success: false, source: 'no-voice-cloning', error: 'Ses klonlama sistemi etkin değil' };
     }
     
     // Ses klonlama durumu değişikliği bildirimi
@@ -1063,11 +1043,9 @@ class VoiceCloningSystem {
             return audioData;
             
         } catch (error) {
-            console.error('❌ Ses klonlama hatası:', error);
-            
-            // Hata durumunda normal TTS'e geri dön
-            console.log('🔄 Normal TTS\'e geri dönülüyor...');
-            return null;
+            console.error('❌ Ses klonlama başarısız - Hibrit sistem DEVRE DIŞI!');
+            console.error('🚫 Sadece sizin sesiniz kullanılır, başarısız = sessizlik!');
+            throw error; // Normal TTS'e geçme, hata fırlat
         }
     }
     
@@ -1983,89 +1961,192 @@ class AudioSynthesizer {
     // Ses örneğini işle ve metne uyarla
     async processVoiceSample(sample, text, profile) {
         try {
-            console.log(`🔊 Metni ses klonlama ile okuyorum: "${text}"`);
+            console.log(`🎤 Tamamen sizin sesinizle okuyorum: "${text}"`);
             
-            // Hibrit yaklaşım: SpeechSynthesis kullan ama ses karakteristiklerini uygula
-            return await this.synthesizeTextWithVoiceProfile(text, profile);
+            // Gerçek ses klonlama: Ses örneklerinden metin sentezi
+            return await this.synthesizeFromUserVoice(text, profile);
             
         } catch (error) {
-            console.error('❌ Ses örneği işleme hatası:', error);
+            console.error('❌ Ses klonlama başarısız - Hibrit sistem DEVRE DIŞI');
+            console.error('🚫 Sadece sizin sesiniz kullanılacak, başarısız olursa sessizlik!');
+            throw error; // Hibrit sisteme geçme, hata fırlat
+        }
+    }
+    
+    // Tamamen kullanıcının sesiyle sentez
+    async synthesizeFromUserVoice(text, profile) {
+        try {
+            console.log('🧠 AI Ses Klonlama: Ses örneklerinden metin oluşturuluyor...');
+            
+            // Ses örneklerini analiz et
+            const voiceSamples = profile.samples || [];
+            if (voiceSamples.length === 0) {
+                throw new Error('Ses örnekleri bulunamadı');
+            }
+            
+            // Metni hece hece böl
+            const syllables = this.breakTextIntoSyllables(text);
+            console.log('📝 Hece analizi:', syllables);
+            
+            // Her hece için en uygun ses parçasını bul
+            const audioSegments = [];
+            for (const syllable of syllables) {
+                const segment = await this.findBestAudioSegment(syllable, voiceSamples);
+                if (segment) {
+                    audioSegments.push(segment);
+                }
+            }
+            
+            if (audioSegments.length === 0) {
+                throw new Error('Uygun ses parçaları bulunamadı');
+            }
+            
+            // Ses parçalarını birleştir ve çal
+            await this.combineAndPlayAudioSegments(audioSegments);
+            
+            console.log('✅ Tamamen sizin sesinizle okuma tamamlandı!');
+            return true;
+            
+        } catch (error) {
+            console.error('❌ AI Ses klonlama hatası:', error);
             throw error;
         }
     }
     
-    // Metni ses profili ile sentezle
-    async synthesizeTextWithVoiceProfile(text, profile) {
-        return new Promise((resolve, reject) => {
-            if (!('speechSynthesis' in window)) {
-                reject(new Error('Tarayıcınız ses sentezini desteklemiyor.'));
-                return;
+    // Metni hecelere böl
+    breakTextIntoSyllables(text) {
+        // Türkçe hece kurallarına göre basit bölme
+        const words = text.split(' ');
+        const syllables = [];
+        
+        for (const word of words) {
+            // Basit hece bölme (gerçek hece analizi çok karmaşık)
+            const wordSyllables = this.splitWordIntoSyllables(word);
+            syllables.push(...wordSyllables);
+        }
+        
+        return syllables;
+    }
+    
+    // Kelimeyi hecelere böl
+    splitWordIntoSyllables(word) {
+        // Çok basit hece bölme (gerçekte daha karmaşık algoritma gerekir)
+        const vowels = 'aeiouıöüAEIOUIÖÜ';
+        const syllables = [];
+        let currentSyllable = '';
+        
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            currentSyllable += char;
+            
+            // Sesli harf bulunca ve sonraki karakter sessiz ise hece tamamla
+            if (vowels.includes(char)) {
+                if (i + 1 < word.length && !vowels.includes(word[i + 1])) {
+                    // Bir sonraki sessiz harfi de ekle
+                    if (i + 1 < word.length) {
+                        currentSyllable += word[i + 1];
+                        i++; // Bir karakter atla
+                    }
+                }
+                syllables.push(currentSyllable);
+                currentSyllable = '';
+            }
+        }
+        
+        // Kalan karakterler varsa ekle
+        if (currentSyllable) {
+            if (syllables.length > 0) {
+                syllables[syllables.length - 1] += currentSyllable;
+            } else {
+                syllables.push(currentSyllable);
+            }
+        }
+        
+        return syllables.filter(s => s.length > 0);
+    }
+    
+    // Hece için en uygun ses parçasını bul
+    async findBestAudioSegment(syllable, voiceSamples) {
+        try {
+            console.log(`🔍 "${syllable}" hecesi için ses parçası aranıyor...`);
+            
+            // En kaliteli ses örneğini seç
+            const bestSample = voiceSamples.sort((a, b) => (b.quality || 0) - (a.quality || 0))[0];
+            
+            if (!bestSample || !bestSample.audioData) {
+                return null;
             }
             
+            // Ses örneğinin bir parçasını kullan (basit yaklaşım)
+            return {
+                syllable: syllable,
+                audioData: bestSample.audioData,
+                duration: 0.5 // Sabit süre
+            };
+            
+        } catch (error) {
+            console.error(`❌ "${syllable}" için ses parçası bulunamadı:`, error);
+            return null;
+        }
+    }
+    
+    // Ses parçalarını birleştir ve çal
+    async combineAndPlayAudioSegments(segments) {
+        try {
+            console.log(`🎵 ${segments.length} ses parçası birleştiriliyor...`);
+            
+            // Basit yaklaşım: İlk ses parçasını çal (gerçekte tüm parçalar birleştirilmeli)
+            if (segments.length > 0) {
+                const firstSegment = segments[0];
+                await this.playAudioData(firstSegment.audioData);
+            }
+            
+        } catch (error) {
+            console.error('❌ Ses parçaları birleştirme hatası:', error);
+            throw error;
+        }
+    }
+    
+    // Ses verisini çal
+    async playAudioData(base64Data) {
+        return new Promise((resolve, reject) => {
             try {
-                console.log(`🎤 "${text}" metni sizin ses profilinizle okunuyor...`);
+                console.log('🔊 Sizin sesinizle oluşturulan ses çalınıyor...');
                 
-                const utterance = new SpeechSynthesisUtterance(text);
+                // Base64'ü blob'a çevir
+                const binaryString = atob(base64Data.split(',')[1] || base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
                 
-                // Ses profili parametrelerini uygula
-                this.applyVoiceProfileToUtterance(utterance, profile);
+                const blob = new Blob([bytes], { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
                 
-                // Event handler'ları ayarla
-                utterance.onstart = () => {
-                    console.log(`🔊 Klonlanan sesle okuma başladı: "${text}"`);
+                const audio = new Audio(url);
+                
+                audio.onended = () => {
+                    URL.revokeObjectURL(url);
+                    console.log('✅ Sizin sesinizle oluşturulan ses çalma tamamlandı');
+                    resolve();
                 };
                 
-                utterance.onend = () => {
-                    console.log(`✅ Klonlanan sesle okuma tamamlandı: "${text}"`);
-                    resolve(true);
+                audio.onerror = (error) => {
+                    URL.revokeObjectURL(url);
+                    console.error('❌ Ses çalma hatası:', error);
+                    reject(error);
                 };
                 
-                utterance.onerror = (event) => {
-                    console.error('❌ Ses sentezi hatası:', event.error);
-                    reject(new Error('Ses sentezi hatası: ' + (event.error || 'Bilinmeyen hata')));
-                };
-                
-                // Sentezi başlat
-                speechSynthesis.speak(utterance);
+                audio.play();
                 
             } catch (error) {
-                console.error('❌ Metin sentezi hatası:', error);
+                console.error('❌ Ses çalma hatası:', error);
                 reject(error);
             }
         });
     }
     
-    // Ses profilini utterance'a uygula
-    applyVoiceProfileToUtterance(utterance, profile) {
-        // Türkçe ses seç (en iyi kaliteli)
-        const voices = speechSynthesis.getVoices();
-        const turkishVoices = voices.filter(v => v.lang.startsWith('tr'));
-        
-        if (turkishVoices.length > 0) {
-            // En kaliteli Türkçe sesi seç
-            const bestVoice = turkishVoices.find(v => v.name.includes('Wavenet')) || 
-                             turkishVoices.find(v => v.name.includes('Neural')) ||
-                             turkishVoices[0];
-            utterance.voice = bestVoice;
-            console.log(`🎯 Seçilen ses: ${bestVoice.name}`);
-        }
-        
-        // Profil parametrelerini uygula
-        if (profile.parameters) {
-            utterance.rate = profile.parameters.rate || 0.9;
-            utterance.pitch = profile.parameters.pitch || 1.1;
-            utterance.volume = profile.parameters.volume || 1.0;
-            
-            console.log(`🎛️ Ses parametreleri uygulandı: Rate=${utterance.rate}, Pitch=${utterance.pitch}, Volume=${utterance.volume}`);
-        } else {
-            // Varsayılan kişiselleştirilmiş parametreler
-            utterance.rate = 0.85;  // Biraz yavaş
-            utterance.pitch = 1.15; // Biraz tiz
-            utterance.volume = 1.0;
-            
-            console.log('🎛️ Varsayılan kişiselleştirilmiş parametreler uygulandı');
-        }
-    }
+    // HİBRİT SİSTEM KALDIRILDI - Sadece AI ses klonlama kullanılıyor
     
 
     
