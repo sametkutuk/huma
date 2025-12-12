@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const HUMA_VERSION = '5.0.0';
-const HUMA_BUILD_DATE = '2024-12-12';
+const HUMA_BUILD_DATE = '2025-01-01';
 const HUMA_FEATURES = ['Kullanıcı Ses Klonlama', 'Hibrit TTS Sistemi', 'Ses Profili Yönetimi', 'Tarayıcı TTS Entegrasyonu'];
 
 // Türkçe Alfabe - 29 harf
@@ -2849,7 +2849,7 @@ function init() {
     loadVoices();
     renderLetterGrid();
     renderPromptsGrid();
-    updateUsageStats();
+    // Usage stats kaldırıldı
     
     // Ses klonlama sistem kontrolü
     setTimeout(() => {
@@ -3063,16 +3063,7 @@ function loadSettings() {
     document.getElementById('speechPitch').value = speechPitch;
     document.getElementById('pitchValue').textContent = speechPitch;
 
-    // Hibrit sistem ayarları
-
-    const maxLimit = parseInt(storage.get('maxLimit', '90'));
-    document.getElementById('maxLimit').value = maxLimit;
-
-    const unlimited = storage.get('unlimited', 'false') === 'true';
-    document.getElementById('unlimitedUsage').checked = unlimited;
-    document.getElementById('limitGroup').classList.toggle('hidden', unlimited);
-
-    document.getElementById('cacheCount').textContent = audioManager.audioCache.size;
+    // Hibrit sistem ayarları - API limitleri kaldırıldı
     
     // Ses klonlama ayarlarını yükle
     loadVoiceCloningSettings();
@@ -3203,12 +3194,7 @@ function updateVoiceProfileStatus() {
     }
 }
 
-function updateUsageStats() {
-    document.getElementById('totalUsage').textContent = audioManager.totalUsage;
-    document.getElementById('currentLimit').textContent = audioManager.unlimitedUsage ? '∞' : audioManager.maxLimit;
-    document.getElementById('remainingQuota').textContent = audioManager.getRemainingQuota();
-    document.getElementById('cacheCount').textContent = audioManager.audioCache.size;
-}
+// API kullanım istatistikleri kaldırıldı - Hibrit sistem API gerektirmez
 
 function updateEngineUI() {
     // Sadece hibrit sistem kullanılıyor - Google TTS kaldırıldı
@@ -3451,7 +3437,7 @@ async function playLetter(letter, card) {
     }
 
     if (document.getElementById('settingsModal').classList.contains('active')) {
-        updateUsageStats();
+        // Usage stats kaldırıldı
     }
 }
 
@@ -3561,7 +3547,7 @@ function getAllPromptsForLetter(letter) {
 
 function openSettings() {
     document.getElementById('settingsModal').classList.add('active');
-    updateUsageStats();
+    // Usage stats kaldırıldı
 }
 
 function closeSettings() {
@@ -3759,21 +3745,9 @@ function saveTtsEngine() {
 
 // Google TTS kaldırıldı - Bu fonksiyon artık kullanılmıyor
 
-function toggleUnlimited() {
-    const unlimited = document.getElementById('unlimitedUsage').checked;
-    document.getElementById('limitGroup').classList.toggle('hidden', unlimited);
-    storage.set('unlimited', unlimited.toString());
-    audioManager.unlimitedUsage = unlimited;
-    updateUsageStats();
-}
+// API limit fonksiyonları kaldırıldı - Hibrit sistem sınırsız
 
-function saveLimit() {
-    const maxLimit = parseInt(document.getElementById('maxLimit').value);
-    const unlimited = document.getElementById('unlimitedUsage').checked;
-    audioManager.setUsageLimit(maxLimit, unlimited);
-    updateUsageStats();
-    alert('✅ Limit kaydedildi!');
-}
+// API limit kaydetme kaldırıldı - Hibrit sistem sınırsız
 
 // ═══════════════════════════════════════════════════════════════════
 // PROMPTS GRID RENDERING

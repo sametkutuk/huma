@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 HUMA ile Öğreniyorum v4.8.0</title>
-    <meta name="version" content="4.8.0">
-    <meta name="build-date" content="2024-12-11">
+    <title>🎨 HUMA ile Öğreniyorum v5.0.0</title>
+    <meta name="version" content="5.0.0">
+    <meta name="build-date" content="2025-01-01">
     <meta name="description" content="HUMA Türkçe Alfabe Öğrenme Uygulaması - Ses Klonlama Sistemi">
     <style>
         * {
@@ -1507,62 +1507,28 @@
                     </div>
                 </div>
 
-                <!-- API ve Limit Ayarları (Accordion) -->
+                <!-- Hibrit Ses Sistemi Bilgisi -->
                 <div class="settings-accordion">
-                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('api')">
+                    <div class="settings-accordion-header" onclick="toggleSettingsAccordion('hybrid')">
                         <div class="settings-accordion-title">
                             <span class="settings-expand-icon">▶</span>
-                            <h3>🔑 API ve Kullanım Ayarları</h3>
+                            <h3>🎭 Hibrit Ses Sistemi</h3>
                         </div>
                     </div>
-                    <div class="settings-accordion-body" id="accordion-api">
+                    <div class="settings-accordion-body" id="accordion-hybrid">
                         <div class="settings-accordion-content">
-                            <!-- Hibrit Ses Sistemi -->
                             <div class="settings-subsection">
-                                <h4>🎭 Hibrit Ses Sistemi</h4>
+                                <h4>🔊 Nasıl Çalışır?</h4>
                                 <p class="settings-description">Tarayıcı TTS + Sizin ses karakteristikleriniz = Mükemmel hibrit sistem</p>
                                 
                                 <div class="info-box">
-                                    <p>✅ <strong>Hibrit Sistem:</strong></p>
-                                    <p>• Tarayıcı TTS metni okur</p>
+                                    <p>✅ <strong>Hibrit Sistem Avantajları:</strong></p>
+                                    <p>• Tarayıcı TTS metni okur (güvenilir)</p>
                                     <p>• Sizin ses kayıtlarınızdan karakteristik alır</p>
                                     <p>• Rate, pitch, volume sizin sesinize göre ayarlanır</p>
-                                    <p>• Tamamen ücretsiz ve güvenilir</p>
+                                    <p>• Tamamen ücretsiz ve API gerektirmez</p>
+                                    <p>• Offline çalışır</p>
                                 </div>
-                            </div>
-
-                            <!-- Kullanım Limiti -->
-                            <div class="settings-subsection">
-                                <h4>Kullanım Limiti</h4>
-                                <p class="settings-description">API kullanımını sınırlandırarak maliyeti kontrol edin.</p>
-
-                                <div class="usage-stats">
-                                    <div class="stat-item">
-                                        <div class="stat-label">📈 Toplam Kullanım:</div>
-                                        <div class="stat-value"><span id="totalUsage">0</span> karakter</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-label">📝 Mevcut Limit:</div>
-                                        <div class="stat-value"><span id="currentLimit">90</span> karakter</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-label">🎯 Kalan Kota:</div>
-                                        <div class="stat-value"><span id="remainingQuota">90</span> karakter</div>
-                                    </div>
-                                </div>
-
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="unlimitedUsage" onchange="toggleUnlimited()">
-                                    <label for="unlimitedUsage">♾️ Sınırsız Kullanım</label>
-                                </div>
-
-                                <div class="form-group limit-input-section" id="limitGroup">
-                                    <label for="maxLimit">Maksimum Karakter Limiti:</label>
-                                    <input type="number" id="maxLimit" value="90" min="10" max="10000" onchange="saveLimit()">
-                                    <small>💡 Cache'deki sesler limiti etkilemez.</small>
-                                </div>
-
-                                <button type="button" class="save-btn" onclick="saveLimit()">💾 Limiti Kaydet</button>
                             </div>
                         </div>
                     </div>
