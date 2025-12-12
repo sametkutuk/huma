@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 HUMA ile Öğreniyorum v4.5.0</title>
-    <meta name="version" content="4.5.0">
+    <title>🎨 HUMA ile Öğreniyorum v4.7.0</title>
+    <meta name="version" content="4.7.0">
     <meta name="build-date" content="2024-12-11">
     <meta name="description" content="HUMA Türkçe Alfabe Öğrenme Uygulaması - Ses Klonlama Sistemi">
     <style>
@@ -1485,7 +1485,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.5.0</span></h1>
+            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.7.0</span></h1>
         </div>
         <div class="letter-grid" id="letterGrid"></div>
     </div>
@@ -1523,20 +1523,16 @@
                     </div>
                     <div class="settings-accordion-body" id="accordion-api">
                         <div class="settings-accordion-content">
-                            <!-- Google TTS API -->
+                            <!-- Google TTS KALDIRILDI -->
                             <div class="settings-subsection">
-                                <h4>Google Cloud API Key</h4>
-                                <p class="settings-description">Küçük kız sesi için Google Cloud Text-to-Speech API key'inizi girin.</p>
-                                <div class="form-group">
-                                    <label for="apiKey">API Key:</label>
-                                    <input type="password" id="apiKey" placeholder="AIza..." value="">
-                                    <button type="button" class="save-btn" onclick="saveApiKey()">💾 API Key Kaydet</button>
-                                </div>
-
-                                <div class="info-box">
-                                    <p>💰 <strong>Ücretsiz Kota:</strong> Ayda 1 milyon karakter ücretsiz!</p>
-                                    <p>📊 <strong>Cache:</strong> <span id="cacheCount">0</span> ses kaydedildi (tekrar API kullanmaz)</p>
-                                    <p>🔗 <strong>Kullanımı takip et:</strong> <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></p>
+                                <h4>🚫 Google TTS Kaldırıldı</h4>
+                                <p class="settings-description">Google TTS tamamen kaldırıldı. Artık sadece hibrit sistem (Tarayıcı TTS + Ses Profili) kullanılıyor.</p>
+                                
+                                <div class="info-box" style="background: #fff3cd; border-color: #ffeaa7;">
+                                    <p>ℹ️ <strong>Yeni Sistem:</strong></p>
+                                    <p>• Tarayıcı TTS + Sizin ses karakteristikleriniz</p>
+                                    <p>• Google API key'e gerek yok</p>
+                                    <p>• Tamamen ücretsiz</p>
                                 </div>
                             </div>
 
@@ -1615,9 +1611,9 @@
                                     <label for="enableVoiceCloning">🎤 Ses Klonlama Motoru</label>
                                 </div>
                                 
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="enableGoogleTTS" checked onchange="toggleEngineControl('googleTTS')">
-                                    <label for="enableGoogleTTS">🌐 Google TTS Motoru</label>
+                                <div class="checkbox-group" style="opacity: 0.5;">
+                                    <input type="checkbox" id="enableGoogleTTS" disabled>
+                                    <label for="enableGoogleTTS">🚫 Google TTS Motoru (Kaldırıldı)</label>
                                 </div>
                                 
                                 <div class="checkbox-group">
@@ -1828,31 +1824,22 @@
                                 <div class="form-group">
                                     <label for="ttsEngine">Ses Motoru Seçimi:</label>
                                     <select id="ttsEngine" onchange="saveTtsEngine()">
-                                        <option value="browser">Tarayıcı (Web Speech API - Ücretsiz)</option>
-                                        <option value="google">Google Cloud TTS (API Key gerekli)</option>
+                                        <option value="browser">Hibrit Sistem (Tarayıcı TTS + Ses Profili)</option>
+                                        <option value="google" disabled>Google Cloud TTS (KALDIRILDI)</option>
                                     </select>
-                                    <small>Google TTS için API key girmeniz gerekir.</small>
+                                    <small>Google TTS kaldırıldı. Hibrit sistem kullanılıyor.</small>
                                 </div>
                             </div>
 
                             <!-- Ses Seçimi -->
                             <div class="settings-subsection">
                                 <h4>Ses Seçimi</h4>
-                                <div class="form-group google-voice-group" id="googleVoiceGroup">
-                                    <label for="googleVoiceSelect">Google Ses:</label>
-                                    <select id="googleVoiceSelect" onchange="saveGoogleVoice()">
-                                        <option value="tr-TR-Wavenet-A">tr-TR-Wavenet-A (Kadın)</option>
-                                        <option value="tr-TR-Wavenet-B">tr-TR-Wavenet-B (Erkek)</option>
-                                        <option value="tr-TR-Wavenet-C">tr-TR-Wavenet-C (Kadın)</option>
-                                        <option value="tr-TR-Wavenet-D">tr-TR-Wavenet-D (Kadın)</option>
-                                        <option value="tr-TR-Wavenet-E">tr-TR-Wavenet-E (Erkek)</option>
-                                        <option value="tr-TR-Standard-A">tr-TR-Standard-A (Kadın)</option>
-                                        <option value="tr-TR-Standard-B">tr-TR-Standard-B (Erkek)</option>
-                                        <option value="tr-TR-Standard-C">tr-TR-Standard-C (Kadın)</option>
-                                        <option value="tr-TR-Standard-D">tr-TR-Standard-D (Kadın)</option>
-                                        <option value="tr-TR-Standard-E">tr-TR-Standard-E (Erkek)</option>
+                                <div class="form-group" style="opacity: 0.5;">
+                                    <label for="googleVoiceSelect">Google Ses (KALDIRILDI):</label>
+                                    <select id="googleVoiceSelect" disabled>
+                                        <option>Google TTS kaldırıldı</option>
                                     </select>
-                                    <small>Yüksek kaliteli Türkçe sesler.</small>
+                                    <small>Artık hibrit sistem kullanılıyor: Tarayıcı TTS + Ses Profili</small>
                                 </div>
                                 <div class="form-group browser-voice-group" id="browserVoiceGroup">
                                     <label for="voiceSelect">Tarayıcı Ses:</label>
@@ -1984,7 +1971,7 @@
                                 <h4 style="color: #667eea; margin-bottom: 15px;">✨ Özellikler</h4>
                                 <ul style="list-style: none; padding: 0; margin: 0;">
                                     <li style="padding: 5px 0; color: #555;">✨ 4 Farklı Tema (Alfabe, Çiftlik, Ev, Sayılar)</li>
-                                    <li style="padding: 5px 0; color: #555;">✨ Sesli Okuma (Google TTS + Tarayıcı)</li>
+                                    <li style="padding: 5px 0; color: #555;">✨ Hibrit Ses Sistemi (Tarayıcı TTS + Ses Profili)</li>
                                     <li style="padding: 5px 0; color: #555;">✨ Kendi Sesinizi Kaydedin</li>
                                     <li style="padding: 5px 0; color: #555;">✨ Klavye Desteği</li>
                                     <li style="padding: 5px 0; color: #555;">✨ Çoklu Prompt Sistemi</li>
@@ -2017,7 +2004,7 @@
                             <div style="text-align: center; color: #999; font-size: 0.9em; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                                 <p>Çocuklar için eğlenceli öğrenme deneyimi 💝</p>
                                 <p style="margin-top: 10px; font-size: 0.85em;">
-                                    <strong>HUMA v4.5.0</strong> - Saf AI Ses Klonlama (Hibrit Yok)<br>
+                                    <strong>HUMA v4.7.0</strong> - Hibrit Ses Sistemi (Google TTS Yok)<br>
                                     <span style="font-size: 0.8em;">Son Güncelleme: 11 Aralık 2024</span>
                                 </p>
                             </div>
