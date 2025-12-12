@@ -5,9 +5,9 @@
 // Son Güncelleme: 2024-12-11
 // ═══════════════════════════════════════════════════════════════════
 
-const HUMA_VERSION = '4.8.0';
-const HUMA_BUILD_DATE = '2024-12-11';
-const HUMA_FEATURES = ['Düzgün Hibrit Sistem', 'Tarayıcı TTS Okur', 'Ses Karakteristikleri', 'Motor Test Kontrolleri'];
+const HUMA_VERSION = '5.0.0';
+const HUMA_BUILD_DATE = '2024-12-12';
+const HUMA_FEATURES = ['Kullanıcı Ses Klonlama', 'Hibrit TTS Sistemi', 'Ses Profili Yönetimi', 'Tarayıcı TTS Entegrasyonu'];
 
 // Türkçe Alfabe - 29 harf
 const TURKISH_LETTERS = [
@@ -162,7 +162,7 @@ class StorageManager {
             rate: 'huma_rate',
             pitch: 'huma_pitch',
             voice: 'huma_voice',
-            // Google TTS configs kaldırıldı
+            voiceCloning: 'huma_voice_cloning',
             audioCache: 'huma_audio_cache'
         };
     }
@@ -205,8 +205,6 @@ class AudioManager {
         this.audioCache = new Map();
         this.isPlayingFlag = false;
 
-        // Google TTS configs kaldırıldı
-
         this.loadCacheFromStorage();
     }
 
@@ -225,13 +223,11 @@ class AudioManager {
         this.storage.setJSON('audioCache', cacheObj);
     }
 
-    // Google TTS metodları kaldırıldı
-
-    // GOOGLE TTS KALDIRILDI - Sadece hibrit sistem (Tarayıcı TTS + Ses Profili)
+    // Hibrit sistem: Kullanıcı ses profili + Tarayıcı TTS
     async speak(text) {
-        console.log('🚫 Google TTS kaldırıldı - Hibrit sistem kullanılıyor');
+        console.log('🎤 Hibrit sistem: Kullanıcı ses profili + Tarayıcı TTS');
         
-        // Hibrit sistem: Tarayıcı TTS + Ses Profili
+        // Hibrit sistem: Kullanıcı ses profili + Tarayıcı TTS
         if (window.voiceCloningSystem && voiceCloningSystem.isEnabled()) {
             const profile = voiceCloningSystem.profileManager.getProfile();
             if (profile) {
@@ -257,7 +253,7 @@ class AudioManager {
         return null;
     }
 
-    // GOOGLE TTS generateAudio KALDIRILDI
+    // Sadece hibrit sistem kullanılıyor
 
     async playAudioData(base64Audio) {
         this.stop();
@@ -3067,7 +3063,7 @@ function loadSettings() {
     document.getElementById('speechPitch').value = speechPitch;
     document.getElementById('pitchValue').textContent = speechPitch;
 
-    // Google TTS ayarları kaldırıldı
+    // Hibrit sistem ayarları
 
     const maxLimit = parseInt(storage.get('maxLimit', '90'));
     document.getElementById('maxLimit').value = maxLimit;
@@ -3215,14 +3211,9 @@ function updateUsageStats() {
 }
 
 function updateEngineUI() {
-    const googleGroup = document.getElementById('googleVoiceGroup');
+    // Sadece hibrit sistem kullanılıyor - Google TTS kaldırıldı
     const browserGroup = document.getElementById('browserVoiceGroup');
-
-    if (ttsEngine === 'google') {
-        googleGroup.classList.add('visible');
-        browserGroup.classList.add('hidden');
-    } else {
-        googleGroup.classList.remove('visible');
+    if (browserGroup) {
         browserGroup.classList.remove('hidden');
     }
 }
@@ -3766,10 +3757,7 @@ function saveTtsEngine() {
     updateEngineUI();
 }
 
-function saveGoogleVoice() {
-    const googleVoice = document.getElementById('googleVoiceSelect').value;
-    storage.set('googleVoice', googleVoice);
-}
+// Google TTS kaldırıldı - Bu fonksiyon artık kullanılmıyor
 
 function toggleUnlimited() {
     const unlimited = document.getElementById('unlimitedUsage').checked;
@@ -4347,7 +4335,6 @@ function toggleVoiceCloning() {
 // Ses motoru test kontrolleri
 const ENGINE_CONTROLS = {
     voiceCloning: true,
-    googleTTS: true,
     browserTTS: true
 };
 
@@ -4377,16 +4364,13 @@ function toggleEngineControl(engine) {
 function loadEngineControls() {
     // Kaydedilmiş ayarları yükle
     ENGINE_CONTROLS.voiceCloning = storage.get('engine_voiceCloning_enabled', 'true') === 'true';
-    ENGINE_CONTROLS.googleTTS = storage.get('engine_googleTTS_enabled', 'true') === 'true';
     ENGINE_CONTROLS.browserTTS = storage.get('engine_browserTTS_enabled', 'true') === 'true';
     
     // UI'ı güncelle
     const vcCheckbox = document.getElementById('enableVoiceCloning');
-    const gtCheckbox = document.getElementById('enableGoogleTTS');
     const btCheckbox = document.getElementById('enableBrowserTTS');
     
     if (vcCheckbox) vcCheckbox.checked = ENGINE_CONTROLS.voiceCloning;
-    if (gtCheckbox) gtCheckbox.checked = ENGINE_CONTROLS.googleTTS;
     if (btCheckbox) btCheckbox.checked = ENGINE_CONTROLS.browserTTS;
 }
 

@@ -19,10 +19,8 @@
 - **📊 Kalite Analizi**: Otomatik ses kalitesi değerlendirmesi ve iyileştirme önerileri
 - **🎤 Ses Örnekleri Yönetimi**: Birden fazla ses örneği kaydedip yönetin
 - **⚡ Akıllı Cache**: Klonlanan sesler cache'lenir, hızlı erişim
-- **Google Cloud TTS**: Yüksek kaliteli Türkçe ses sentezi
-- **Tarayıcı TTS**: Ücretsiz tarayıcı tabanlı ses
+- **🔊 Hibrit TTS Sistemi**: Kullanıcı ses profili + tarayıcı TTS entegrasyonu
 - **Ses Kaydetme**: Kendi sesinizi kaydedip kullanabilirsiniz
-- **Rastgele Ses Seçimi**: Her tıklamada farklı sesler (kayıtlı sesler + TTS)
 - **Ses Ayarları**: Hız ve ton ayarlanabilir (çocuklar için optimize edilmiş)
 
 ### 🎯 Öğrenme Özellikleri
@@ -55,7 +53,7 @@
 1. `huma.html` dosyasını tarayıcınızda açın
 2. **Ayarlara erişim** (çocuk güvenliği için gizli):
    - 🎯 **HUMA** başlığına **5 kere hızlıca** tıklayın (tüm cihazlarda çalışır)
-3. (Opsiyonel) Google Cloud API key'inizi girin
+3. Ses klonlama için kendi sesinizi kaydedin
 4. Tema seçin ve harflere tıklayarak öğrenmeye başlayın!
 5. Ayarlar açıkken **ESC** tuşu ile kapatabilirsiniz
 
@@ -70,8 +68,7 @@
 - Vanilla JavaScript (ES6+)
 - **Web Audio API** (ses analizi ve işleme)
 - **MediaRecorder API** (ses kaydetme)
-- **SpeechSynthesis API** (ses klonlama)
-- Google Cloud Text-to-Speech API
+- **SpeechSynthesis API** (hibrit ses sentezi)
 - Web Speech API (tarayıcı TTS)
 - LocalStorage (veri saklama)
 - **Property-Based Testing** (21 test ile kapsamlı doğrulama)
@@ -93,14 +90,16 @@
 
 ## 📝 Değişiklik Notları
 
-### v4.0 (Son Sürüm) - Ses Klonlama Özelliği 🎤
-- ✅ **🎭 Ses Klonlama Sistemi**: Kendi sesinizi klonlayarak tüm metinleri kendi sesinizle dinleyin
+### v5.0 (Son Sürüm) - Saf Ses Klonlama Sistemi 🎤
+- ✅ **🚫 Google TTS Kaldırıldı**: Artık sadece kullanıcı ses klonlama sistemi
+- ✅ **🎭 Saf Ses Klonlama**: Sadece kendi sesinizi kullanarak tüm metinleri dinleyin
+- ✅ **🔊 Hibrit TTS Sistemi**: Kullanıcı ses profili + tarayıcı TTS entegrasyonu
 - ✅ **📊 Kalite Analizi**: Otomatik ses kalitesi değerlendirmesi ve iyileştirme önerileri
 - ✅ **🎤 Ses Örnekleri Yönetimi**: Birden fazla ses örneği kaydedip yönetin
 - ✅ **⚡ Akıllı Cache**: Klonlanan sesler cache'lenir, performans artışı
 - ✅ **🚨 Gelişmiş Hata Yönetimi**: Kullanıcı dostu bildirimler ve progress indicator'lar
 - ✅ **💾 Kapsamlı Backup/Restore**: Ses profilleri ve cache verileri dahil yedekleme
-- ✅ **🔄 Seamless Entegrasyon**: Normal TTS ile otomatik geçiş
+- ✅ **🔄 Seamless Entegrasyon**: Tarayıcı TTS ile otomatik geçiş
 - ✅ **🎯 Tema Uyumluluğu**: Tüm temalarla sorunsuz çalışma
 - ✅ **♿ Accessibility**: Erişilebilirlik standartlarına uygun tasarım
 - ✅ **🧪 Property-Based Testing**: 21 test ile kapsamlı doğrulama

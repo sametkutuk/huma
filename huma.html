@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 HUMA ile Öğreniyorum v4.7.0</title>
-    <meta name="version" content="4.7.0">
+    <title>🎨 HUMA ile Öğreniyorum v4.8.0</title>
+    <meta name="version" content="4.8.0">
     <meta name="build-date" content="2024-12-11">
     <meta name="description" content="HUMA Türkçe Alfabe Öğrenme Uygulaması - Ses Klonlama Sistemi">
     <style>
@@ -874,13 +874,7 @@
             display: none;
         }
 
-        .google-voice-group {
-            display: none;
-        }
-
-        .google-voice-group.visible {
-            display: block;
-        }
+        /* Google TTS kaldırıldı */
 
         .browser-voice-group {
             display: block;
@@ -1485,7 +1479,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.7.0</span></h1>
+            <h1>🎨 HUMA ile Öğreniyorum <span style="font-size: 0.6em; color: #666; font-weight: normal;">v4.8.0</span></h1>
         </div>
         <div class="letter-grid" id="letterGrid"></div>
     </div>
@@ -1523,16 +1517,17 @@
                     </div>
                     <div class="settings-accordion-body" id="accordion-api">
                         <div class="settings-accordion-content">
-                            <!-- Google TTS KALDIRILDI -->
+                            <!-- Hibrit Ses Sistemi -->
                             <div class="settings-subsection">
-                                <h4>🚫 Google TTS Kaldırıldı</h4>
-                                <p class="settings-description">Google TTS tamamen kaldırıldı. Artık sadece hibrit sistem (Tarayıcı TTS + Ses Profili) kullanılıyor.</p>
+                                <h4>🎭 Hibrit Ses Sistemi</h4>
+                                <p class="settings-description">Tarayıcı TTS + Sizin ses karakteristikleriniz = Mükemmel hibrit sistem</p>
                                 
-                                <div class="info-box" style="background: #fff3cd; border-color: #ffeaa7;">
-                                    <p>ℹ️ <strong>Yeni Sistem:</strong></p>
-                                    <p>• Tarayıcı TTS + Sizin ses karakteristikleriniz</p>
-                                    <p>• Google API key'e gerek yok</p>
-                                    <p>• Tamamen ücretsiz</p>
+                                <div class="info-box">
+                                    <p>✅ <strong>Hibrit Sistem:</strong></p>
+                                    <p>• Tarayıcı TTS metni okur</p>
+                                    <p>• Sizin ses kayıtlarınızdan karakteristik alır</p>
+                                    <p>• Rate, pitch, volume sizin sesinize göre ayarlanır</p>
+                                    <p>• Tamamen ücretsiz ve güvenilir</p>
                                 </div>
                             </div>
 
@@ -1611,10 +1606,7 @@
                                     <label for="enableVoiceCloning">🎤 Ses Klonlama Motoru</label>
                                 </div>
                                 
-                                <div class="checkbox-group" style="opacity: 0.5;">
-                                    <input type="checkbox" id="enableGoogleTTS" disabled>
-                                    <label for="enableGoogleTTS">🚫 Google TTS Motoru (Kaldırıldı)</label>
-                                </div>
+
                                 
                                 <div class="checkbox-group">
                                     <input type="checkbox" id="enableBrowserTTS" checked onchange="toggleEngineControl('browserTTS')">
@@ -1625,7 +1617,7 @@
                                     <p>⚠️ <strong>Test Modu:</strong></p>
                                     <p>• Sadece işaretli motorlar kullanılacak</p>
                                     <p>• En az bir motor aktif olmalı</p>
-                                    <p>• Öncelik sırası: Klonlama → Google → Tarayıcı</p>
+                                    <p>• Öncelik sırası: Ses Klonlama → Tarayıcı TTS</p>
                                 </div>
                             </div>
 
@@ -1824,23 +1816,16 @@
                                 <div class="form-group">
                                     <label for="ttsEngine">Ses Motoru Seçimi:</label>
                                     <select id="ttsEngine" onchange="saveTtsEngine()">
-                                        <option value="browser">Hibrit Sistem (Tarayıcı TTS + Ses Profili)</option>
-                                        <option value="google" disabled>Google Cloud TTS (KALDIRILDI)</option>
+                                        <option value="browser">Hibrit Sistem (Kullanıcı Ses Profili + Tarayıcı TTS)</option>
                                     </select>
-                                    <small>Google TTS kaldırıldı. Hibrit sistem kullanılıyor.</small>
+                                    <small>Sadece hibrit sistem: Kullanıcı ses profili + tarayıcı TTS</small>
                                 </div>
                             </div>
 
                             <!-- Ses Seçimi -->
                             <div class="settings-subsection">
                                 <h4>Ses Seçimi</h4>
-                                <div class="form-group" style="opacity: 0.5;">
-                                    <label for="googleVoiceSelect">Google Ses (KALDIRILDI):</label>
-                                    <select id="googleVoiceSelect" disabled>
-                                        <option>Google TTS kaldırıldı</option>
-                                    </select>
-                                    <small>Artık hibrit sistem kullanılıyor: Tarayıcı TTS + Ses Profili</small>
-                                </div>
+                                <!-- Google TTS kaldırıldı -->
                                 <div class="form-group browser-voice-group" id="browserVoiceGroup">
                                     <label for="voiceSelect">Tarayıcı Ses:</label>
                                     <select id="voiceSelect" onchange="saveVoice()">
@@ -1945,7 +1930,7 @@
 
                             <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 0.85em; color: #666;">
                                 <p><strong>💡 İpucu:</strong> Yedek dosyası tüm ses kayıtlarınızı, özel promptlarınızı, ses klonlama profilinizi ve ayarlarınızı içerir.</p>
-                                <p style="margin-top: 5px;">Yedek dosyasını güvenli bir yerde saklayın (Google Drive, Dropbox, vb.)</p>
+                                <p style="margin-top: 5px;">Yedek dosyasını güvenli bir yerde saklayın (bulut depolama, harici disk, vb.)</p>
                             </div>
                         </div>
                     </div>
@@ -2004,7 +1989,7 @@
                             <div style="text-align: center; color: #999; font-size: 0.9em; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                                 <p>Çocuklar için eğlenceli öğrenme deneyimi 💝</p>
                                 <p style="margin-top: 10px; font-size: 0.85em;">
-                                    <strong>HUMA v4.7.0</strong> - Hibrit Ses Sistemi (Google TTS Yok)<br>
+                                    <strong>HUMA v4.8.0</strong> - Düzgün Hibrit Sistem<br>
                                     <span style="font-size: 0.8em;">Son Güncelleme: 11 Aralık 2024</span>
                                 </p>
                             </div>
